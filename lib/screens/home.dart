@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geofencing/widgets/navigation_drawer_widget.dart';
+import 'package:geofencing/widgets/map.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Scaffold();
+  Widget build(BuildContext context) => Scaffold(
+        body: MapWidget(),
+      );
 }

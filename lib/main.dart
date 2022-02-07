@@ -42,12 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        endDrawer: NavigationDrawerWidget(),
-        appBar: AppBar(
-          title: Text(widget.title),
-          backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
-          centerTitle: true,
-        ),
-        body: HomeScreen());
+      endDrawer: NavigationDrawerWidget(),
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
+        centerTitle: true,
+      ),
+      body: HomeScreen(),
+    );
   }
 }
