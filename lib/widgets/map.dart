@@ -1,22 +1,20 @@
 // ignore_for_file: unnecessary_new
 
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geofencing/models/Zone.dart';
 import 'package:latlong2/latlong.dart' as lat;
 import 'package:http/http.dart' as http;
 
 class MapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final List<Polygon> points;
-    late Zone mainZone;
+    final List<Polygon> mainZone = [];
+    late List<lat.LatLng> mainPointsList = [];
     late List<lat.LatLng> pointsList = [];
 
-    Future<Zone> fetchZone() async {
+    //Fetch main zone
+    void fetchMainZone() async {
       final response = await http.get(Uri.parse(
           'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain'));
 
@@ -25,60 +23,64 @@ class MapWidget extends StatelessWidget {
             ['coordinates'][0];
 
         for (var item in res) {
-          pointsList.add(lat.LatLng(item[1], item[0]));
+          mainPointsList.add(lat.LatLng(item[1], item[0]));
         }
-        return Zone.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to load album');
       }
     }
 
-    fetchZone();
+    //Fetch all zones
+    void fetchZones() async {
+      final response = await http.get(
+          Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62000/items/zone'));
 
-    points = [
-      Polygon(
-        color: Colors.yellow.withOpacity(0.5),
-        borderColor: Colors.blue,
-        points: pointsList,
-      )
-    ];
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body)['data'];
+        var i = 3326;
+        for (var zone in data) {
+          print(zone['coordonnees']);
+          pointsList = [];
+          for (var item in zone['coordonnees']['coordinates'][0]) {
+            pointsList.add(lat.LatLng(item[1], item[0]));
+          }
+          mainZone.add(Polygon(
+            color: Color(0xff123456 + i * 100).withOpacity(0.5),
+            borderColor: Color(0xff123456 + i * 100).withOpacity(0.5),
+            borderStrokeWidth: 3,
+            points: pointsList,
+          ));
+          i = i + 999;
+        }
+      } else {
+        throw Exception('Failed to load album');
+      }
+    }
+
+    fetchMainZone();
+    fetchZones();
+
+    mainZone.add(Polygon(
+      color: Colors.orange.withOpacity(0.2),
+      borderColor: Colors.orange.withOpacity(0.5),
+      borderStrokeWidth: 2,
+      points: mainPointsList,
+    ));
 
     return FlutterMap(
       options: MapOptions(
         center: lat.LatLng(48.63122, 6.107505966858279),
+        minZoom: 17.0,
         zoom: 17.0,
       ),
       layers: [
-        PolygonLayerOptions(
-          polygons: points,
-        ),
-        MarkerLayerOptions(
-          markers: [
-            Marker(
-              width: 80.0,
-              height: 80.0,
-              point: lat.LatLng(48.63180334364356, 6.10944),
-              builder: (ctx) => Container(),
-            ),
-          ],
-        ),
+        PolygonLayerOptions(polygons: mainZone),
       ],
       children: <Widget>[
         TileLayerWidget(
-            options: TileLayerOptions(
-                urlTemplate:
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'])),
-        MarkerLayerWidget(
-          options: MarkerLayerOptions(
-            markers: [
-              Marker(
-                width: 100.0,
-                height: 100.0,
-                point: lat.LatLng(48.63180334364356, 6.107505966858279),
-                builder: (ctx) => Container(),
-              ),
-            ],
+          options: TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
           ),
         ),
       ],
