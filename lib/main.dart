@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 void main() {
@@ -41,15 +42,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: NavigationDrawerWidget(),
-      appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(),
-      ),
-    );
+        endDrawer: NavigationDrawerWidget(),
+        appBar: AppBar(
+          title: Text(widget.title),
+          backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
+          centerTitle: true,
+        ),
+        body: HomeScreen());
   }
 }

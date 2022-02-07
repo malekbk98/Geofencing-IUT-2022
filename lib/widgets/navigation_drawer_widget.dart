@@ -56,19 +56,19 @@ class NavigationDrawerWidget extends StatelessWidget {
 
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ZonesPage(),
+          builder: (context) => ZonesScreen(),
         ));
         break;
 
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SpotsPage(),
+          builder: (context) => SpotsScreen(),
         ));
         break;
 
       case 3:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SettingPage(),
+          builder: (context) => SettingScreen(),
         ));
     }
   }

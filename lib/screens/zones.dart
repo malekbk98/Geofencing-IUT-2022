@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
-class ZonesPage extends StatelessWidget {
+class ZonesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         endDrawer: NavigationDrawerWidget(),
