@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const MyApp());
 }
 
@@ -12,11 +17,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    initData();
     return MaterialApp(
       title: 'Geofencing',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Accueil'),
     );
   }
@@ -34,13 +41,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: NavigationDrawerWidget(),
+      endDrawer: const NavigationDrawerWidget(),
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
+        backgroundColor: const Color.fromRGBO(34, 36, 43, 1.0),
         centerTitle: true,
       ),
-      body: HomeScreen(),
+      body: const HomeScreen(),
     );
   }
 }

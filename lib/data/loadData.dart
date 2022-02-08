@@ -3,12 +3,12 @@ import 'package:geofencing/models/Zone.dart';
 import 'package:http/http.dart' as http;
 
 late List<Zone> zones;
-Zone? mainZone = null;
+late Zone mainZone;
 
 //Fetch main zone
 Future<Zone> fetchMainZone() async {
   final response = await http.get(
-      Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62004/items/terrain'));
+      Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain'));
 
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -28,7 +28,7 @@ Future<Zone> fetchMainZone() async {
 //Fetch all zones
 Future<List<Zone>> fetchZones() async {
   final response = await http
-      .get(Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62004/items/zone'));
+      .get(Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62000/items/zone'));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     List<Zone> tempZones = [];
@@ -51,15 +51,17 @@ Future<List<Zone>> fetchZones() async {
 initData() {
   //Load main zone
   try {
-    fetchMainZone();
+    mainZone = fetchMainZone() as Zone;
   } catch (e) {
+    // ignore: avoid_print
     print(e.toString());
   }
 
   //Load all zones
   try {
-    fetchZones();
+    zones = fetchZones() as List<Zone>;
   } catch (e) {
+    // ignore: avoid_print
     print(e.toString());
   }
 }
