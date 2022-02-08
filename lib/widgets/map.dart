@@ -8,12 +8,14 @@ import 'package:latlong2/latlong.dart' as lat;
 import 'package:http/http.dart' as http;
 
 class MapWidget extends StatefulWidget {
+  const MapWidget({Key? key}) : super(key: key);
+
   @override
   _MapWidgetState createState() => _MapWidgetState();
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  final List<Polygon> mainZone = [];
+  final List<Polygon> allZones = [];
   late List<lat.LatLng> mainPointsList = [];
   late List<lat.LatLng> pointsList = [];
 
@@ -45,12 +47,11 @@ class _MapWidgetState extends State<MapWidget> {
       var data = jsonDecode(response.body)['data'];
       var i = 3326;
       for (var zone in data) {
-        print(zone['coordonnees']);
         pointsList = [];
         for (var item in zone['coordonnees']['coordinates'][0]) {
           pointsList.add(lat.LatLng(item[1], item[0]));
         }
-        mainZone.add(Polygon(
+        allZones.add(Polygon(
           color: Color(0xff123456 + i * 100).withOpacity(0.5),
           borderColor: Color(0xff123456 + i * 100).withOpacity(0.5),
           borderStrokeWidth: 3,
@@ -68,7 +69,7 @@ class _MapWidgetState extends State<MapWidget> {
     fetchMainZone();
     fetchZones();
 
-    mainZone.add(Polygon(
+    allZones.add(Polygon(
       color: Colors.orange.withOpacity(0.2),
       borderColor: Colors.orange.withOpacity(0.5),
       borderStrokeWidth: 2,
@@ -88,7 +89,7 @@ class _MapWidgetState extends State<MapWidget> {
         ],
       ),
       layers: [
-        PolygonLayerOptions(polygons: mainZone),
+        PolygonLayerOptions(polygons: allZones),
       ],
       children: <Widget>[
         TileLayerWidget(
@@ -103,8 +104,7 @@ class _MapWidgetState extends State<MapWidget> {
         LocationOptions(
           locationButton(),
           onLocationUpdate: (LatLngData? ld) {
-            print(
-                'Location updated: ${ld?.location} (accuracy: ${ld?.accuracy})');
+            //print('Location updated: ${ld?.location} (accuracy: ${ld?.accuracy})');
           },
           onLocationRequested: (LatLngData? ld) {
             if (ld == null) {
