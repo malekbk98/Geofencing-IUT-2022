@@ -4,6 +4,7 @@ class Zone {
   final int id;
   final String status;
   final String nom;
+  final String type;
   final String description;
   final List coordonnees;
 
@@ -12,6 +13,7 @@ class Zone {
       {required this.id,
       required this.status,
       required this.nom,
+      required this.type,
       required this.description,
       required this.coordonnees});
 
@@ -20,6 +22,7 @@ class Zone {
     return Zone(
       id: json['id'],
       status: json['status'],
+      type: json['type'],
       nom: json['nom'],
       description: json['description'],
       coordonnees: json['coordonnees'],
@@ -31,6 +34,7 @@ class Zone {
       'id': id,
       'status': status,
       'nom': nom,
+      'type': type,
       'description': description,
       'coordonnees': coordonnees
     };
@@ -42,6 +46,7 @@ class Zone {
         id: map['id'],
         status: map['status'],
         nom: map['nom'],
+        type: map['type'],
         description: map['description'],
         coordonnees: map['coordonnees']);
     return zone;
@@ -50,6 +55,6 @@ class Zone {
   //To string
   @override
   String toString() {
-    return 'Zone{id: $id, name: $nom, status: $status, description: $description, coordonnees: $coordonnees}';
+    return 'Zone{id: $id, name: $nom, status: $status, type: $type, description: $description, coordonnees: $coordonnees}';
   }
 }

@@ -9,6 +9,7 @@ import 'package:geofencing/models/Zone.dart';
 import 'package:latlong2/latlong.dart' as lat;
 import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
+import 'package:geofencing/data/DBHelper.dart' as dbHelper;
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -25,10 +26,11 @@ class _MapWidgetState extends State<MapWidget> {
   final MapController mapController = MapController();
 
   //Build main zone (terrain)
-  buildMainZone() {
+  buildMainZone() async {
     final LocalStorage storage = new LocalStorage('geofencing');
-    Zone mainZone = storage.getItem('mainZone');
-    if (mainZone is Zone) {
+    Zone mainZone = dbHelper.getMainZone() as Zone;
+    print("mainZone");
+    if (0 == 0) {
       for (var item in mainZone.coordonnees) {
         mainPointsList.add(lat.LatLng(item[1], item[0]));
       }
@@ -63,7 +65,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //buildMainZone();
+    buildMainZone();
     //buildZones();
 
     allZones.add(Polygon(

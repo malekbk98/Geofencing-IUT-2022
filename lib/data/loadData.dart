@@ -9,11 +9,12 @@ import 'DBHelper.dart';
 
 late List<Zone> zones;
 late Zone mainZone;
+late Database db;
 
 //Fetch main zone
 void fetchMainZone() async {
   final response = await http.get(Uri.parse(
-      'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=admin_token'));
+      'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=public_mine_token'));
 
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -22,15 +23,13 @@ void fetchMainZone() async {
       id: data['id'],
       status: data['status'],
       nom: data['nom'],
+      type: "main zone",
       description: data['description'],
       coordonnees: data['coordonnees']['coordinates'][0],
     );
 
-    //Add to storage (to remove )
-    final LocalStorage storage = new LocalStorage('geofencing');
-    storage.setItem('mainZone', mainZone);
-
-    mainZone = mainZone;
+    //Add to db
+    dbHelper.insertZone(mainZone);
   } else {
     throw Exception('Failed to load main zone');
   }
@@ -39,24 +38,24 @@ void fetchMainZone() async {
 //Fetch all zones
 void fetchZones() async {
   final response = await http.get(Uri.parse(
-      'http://docketu.iutnc.univ-lorraine.fr:62000/items/zone?access_token=admin_token'));
+      'http://docketu.iutnc.univ-lorraine.fr:62000/items/zone?access_token=public_mine_token'));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     List<Zone> tempZones = [];
     var data = jsonDecode(response.body)['data'];
     for (var zone in data) {
-      tempZones.add(Zone(
+      var temp = Zone(
         id: zone['id'],
         status: zone['status'],
         nom: zone['nom'],
+        type: "zone",
         description: zone['description'],
         coordonnees: zone['coordonnees']['coordinates'][0],
-      ));
-    }
-    final LocalStorage storage = new LocalStorage('geofencing');
-    storage.setItem('zones', tempZones);
+      );
 
-    zones = tempZones;
+      //Add to db
+      dbHelper.insertZone(temp);
+    }
   } else {
     throw Exception('Failed to load zones');
   }
@@ -64,9 +63,12 @@ void fetchZones() async {
 
 initData() {
   try {
-    dbHelper.main();
+    //Init database
+    dbHelper.initDb();
+
     //Load main zone
     fetchMainZone();
+
     //Load all zones
     fetchZones();
   } catch (e) {
