@@ -28,7 +28,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
@@ -51,7 +52,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
@@ -74,7 +76,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
@@ -97,7 +100,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
@@ -120,7 +124,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
@@ -143,7 +148,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
@@ -166,7 +172,8 @@ class ZonesPage extends StatelessWidget {
                         'Test',
                         style: TextStyle(
                           color: Colors.yellow,
-                          fontSize: 30
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),

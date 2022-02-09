@@ -1,10 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:http/http.dart' as http;
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 class SpotsPage extends StatelessWidget {
+  const SpotsPage({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -29,7 +26,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -49,7 +47,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -69,7 +68,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -89,7 +89,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -109,7 +110,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -129,7 +131,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -149,7 +152,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -169,7 +173,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -189,7 +194,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -209,7 +215,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -229,7 +236,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -249,7 +257,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -269,7 +278,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -289,7 +299,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -309,7 +320,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -329,7 +341,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -349,7 +362,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -369,7 +383,8 @@ class SpotsPage extends StatelessWidget {
                     'Test',
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 20
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
