@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
+import 'package:localstorage/localstorage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final LocalStorage storage = LocalStorage('geofencing');
+  bool initialized = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +51,17 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: const Color.fromRGBO(34, 36, 43, 1.0),
         centerTitle: true,
       ),
-      body: const HomeScreen(),
+      body: FutureBuilder(
+        future: storage.ready,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          while (snapshot.data == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return const HomeScreen();
+        },
+      ),
     );
   }
 }

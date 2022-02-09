@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
+import 'package:geofencing/data/loadData.dart' as data;
+import 'package:geofencing/models/Zone.dart';
 import 'package:latlong2/latlong.dart' as lat;
 import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -21,34 +24,28 @@ class _MapWidgetState extends State<MapWidget> {
 
   final MapController mapController = MapController();
 
-  //Fetch main zone
-  void fetchMainZone() async {
-    final response = await http.get(
-        Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain'));
-
-    if (response.statusCode == 200) {
-      var res =
-          jsonDecode(response.body)['data'][0]['coordonnees']['coordinates'][0];
-
-      for (var item in res) {
+  //Build main zone (terrain)
+  buildMainZone() {
+    final LocalStorage storage = new LocalStorage('geofencing');
+    Zone mainZone = storage.getItem('mainZone');
+    if (mainZone is Zone) {
+      for (var item in mainZone.coordonnees) {
         mainPointsList.add(lat.LatLng(item[1], item[0]));
       }
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to build main zone');
     }
   }
 
-  //Fetch all zones
-  void fetchZones() async {
-    final response = await http.get(
-        Uri.parse('http://docketu.iutnc.univ-lorraine.fr:62000/items/zone'));
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['data'];
+  //Build all zones
+  void buildZones() {
+    final LocalStorage storage = new LocalStorage('geofencing');
+    List<Zone> zones = storage.getItem('zones');
+    if (zones is List<Zone>) {
       var i = 3326;
-      for (var zone in data) {
+      for (var zone in zones) {
         pointsList = [];
-        for (var item in zone['coordonnees']['coordinates'][0]) {
+        for (var item in zone.coordonnees) {
           pointsList.add(lat.LatLng(item[1], item[0]));
         }
         allZones.add(Polygon(
@@ -60,14 +57,14 @@ class _MapWidgetState extends State<MapWidget> {
         i = i + 999;
       }
     } else {
-      throw Exception('Failed to load album');
+      throw Exception('Failed to build all zones');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    fetchMainZone();
-    fetchZones();
+    //buildMainZone();
+    //buildZones();
 
     allZones.add(Polygon(
       color: Colors.orange.withOpacity(0.2),
