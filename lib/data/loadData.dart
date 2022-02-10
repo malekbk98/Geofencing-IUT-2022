@@ -23,7 +23,7 @@ void fetchMainZone() async {
       id: data['id'],
       status: data['status'],
       nom: data['nom'],
-      type: "main zone",
+      type: "mainZone",
       description: data['description'],
       coordonnees: data['coordonnees']['coordinates'][0],
     );
@@ -66,9 +66,11 @@ initData() {
     //Init database
     dbHelper.initDb();
 
+    /**
+     * Load from APIs
+     */
     //Load main zone
     fetchMainZone();
-
     //Load all zones
     fetchZones();
   } catch (e) {

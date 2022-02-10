@@ -7,6 +7,9 @@ import 'package:geofencing/models/Zone.dart';
 
 var database;
 
+late Zone mainZone;
+late List<Zone> zones;
+
 initDb() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -25,7 +28,7 @@ initDb() async {
   );
 }
 
-// Define a function that inserts dogs into the database
+// Insert a zone
 Future<void> insertZone(Zone zone) async {
   final db = await database;
   await db.insert(
@@ -43,12 +46,13 @@ Future<void> insertZone(Zone zone) async {
 }
 
 //Get all zones
-Future<List<Zone>> zones() async {
+Future<List<Zone>> getZones() async {
   // Get a reference to the database.
   final db = await database;
 
-  // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps = await db.query('zones');
+  // Query the table for all The Zones.
+  final List<Map<String, dynamic>> maps =
+      await db.rawQuery('SELECT * FROM zones WHERE type=?', ['zone']);
 
   // Convert the List<Map<String, dynamic> into a List<Zone>.
   return List.generate(maps.length, (i) {
@@ -63,19 +67,20 @@ Future<List<Zone>> zones() async {
 }
 
 //Get main zone
-Future<Zone> getMainZone() async {
+Future<dynamic> getMainZone() async {
   // Get a reference to the database.
   final db = await database;
 
-  // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps = await db.query('zones');
-  print(maps[0]['id']);
+  // Query the table for all The Zones.
+  final List<Map<String, dynamic>> maps =
+      await db.rawQuery('SELECT * FROM zones WHERE type=?', ['mainZone']);
+
+  // Convert the List<Map<String, dynamic> into a List<Zone>.
   return Zone(
-    id: maps[0]['id'],
-    status: maps[0]['status'],
-    nom: maps[0]['nom'],
-    type: maps[0]['type'],
-    description: maps[0]['description'],
-    coordonnees: jsonDecode(maps[0]['coordonnees']),
-  );
+      id: maps[0]['id'],
+      status: maps[0]['status'],
+      nom: maps[0]['nom'],
+      type: maps[0]['type'],
+      description: maps[0]['description'],
+      coordonnees: jsonDecode(maps[0]['coordonnees']));
 }

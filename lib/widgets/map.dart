@@ -1,13 +1,8 @@
-// ignore_for_file: unnecessary_new
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
-import 'package:geofencing/data/loadData.dart' as data;
 import 'package:geofencing/models/Zone.dart';
 import 'package:latlong2/latlong.dart' as lat;
-import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
 import 'package:geofencing/data/DBHelper.dart' as dbHelper;
 
@@ -19,61 +14,69 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  final List<Polygon> allZones = [];
+  late List<Polygon> allZones = [];
   late List<lat.LatLng> mainPointsList = [];
   late List<lat.LatLng> pointsList = [];
-
   final MapController mapController = MapController();
+  bool setMainZone = false;
+  bool setZones = false;
 
   //Build main zone (terrain)
   buildMainZone() async {
-    final LocalStorage storage = new LocalStorage('geofencing');
-    Zone mainZone = dbHelper.getMainZone() as Zone;
-    print("mainZone");
-    if (0 == 0) {
-      for (var item in mainZone.coordonnees) {
-        mainPointsList.add(lat.LatLng(item[1], item[0]));
-      }
-    } else {
-      throw Exception('Failed to build main zone');
+    //Run this single time (async makes * calls so you need to break those calls)
+    if (setMainZone == false) {
+      dbHelper.getMainZone().then((value) {
+        setMainZone = true;
+        print('im called');
+        //Execute after getMainZone finish loading (async)
+        for (var item in value.coordonnees) {
+          //Add to temp list of coord
+          mainPointsList.add(lat.LatLng(item[1], item[0]));
+        }
+
+        allZones.add(Polygon(
+          color: Colors.orange.withOpacity(0.2),
+          borderColor: Colors.orange.withOpacity(0.5),
+          borderStrokeWidth: 2,
+          points: mainPointsList,
+        ));
+
+        //Refresh state
+        setState(() {});
+      });
     }
   }
 
   //Build all zones
   void buildZones() {
-    final LocalStorage storage = new LocalStorage('geofencing');
-    List<Zone> zones = storage.getItem('zones');
-    if (zones is List<Zone>) {
-      var i = 3326;
-      for (var zone in zones) {
-        pointsList = [];
-        for (var item in zone.coordonnees) {
-          pointsList.add(lat.LatLng(item[1], item[0]));
+    if (setZones == false) {
+      dbHelper.getZones().then((value) {
+        setZones = true;
+        var i = 3325;
+        for (var zone in value) {
+          pointsList = [];
+          for (var item in zone.coordonnees) {
+            pointsList.add(lat.LatLng(item[1], item[0]));
+          }
+          allZones.add(Polygon(
+            color: Color(0xff123456 + i * 100).withOpacity(0.5),
+            borderColor: Color(0xff123456 + i * 100).withOpacity(0.5),
+            borderStrokeWidth: 3,
+            points: pointsList,
+          ));
+          i = i + 999;
         }
-        allZones.add(Polygon(
-          color: Color(0xff123456 + i * 100).withOpacity(0.5),
-          borderColor: Color(0xff123456 + i * 100).withOpacity(0.5),
-          borderStrokeWidth: 3,
-          points: pointsList,
-        ));
-        i = i + 999;
-      }
-    } else {
-      throw Exception('Failed to build all zones');
+
+        //Refresh state
+        setState(() {});
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     buildMainZone();
-    //buildZones();
-
-    allZones.add(Polygon(
-      color: Colors.orange.withOpacity(0.2),
-      borderColor: Colors.orange.withOpacity(0.5),
-      borderStrokeWidth: 2,
-      points: mainPointsList,
-    ));
+    buildZones();
 
     return FlutterMap(
       mapController: mapController,
