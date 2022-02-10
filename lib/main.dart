@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geofencing/data/loadData.dart';
+import 'package:geofencing/models/Zone.dart';
 import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:geofencing/data/DBHelper.dart' as dbHelper;
+import 'package:geofencing/data/loadData.dart' as dataLoader;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,16 +52,15 @@ class _MyHomePageState extends State<MyHomePage> {
           centerTitle: true,
         ),
         body: FutureBuilder(
-            future: dbHelper.getMainZone(),
+            future: dataLoader.zones,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.data == null) {
-                print(snapshot.data);
-
+              if (0 == 1) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
+              } else {
+                return const HomeScreen();
               }
-              return const HomeScreen();
             }));
   }
 }

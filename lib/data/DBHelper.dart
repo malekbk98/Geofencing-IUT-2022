@@ -10,10 +10,10 @@ var database;
 late Zone mainZone;
 late List<Zone> zones;
 
-initDb() async {
+Future<void> initDb() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  database = openDatabase(
+  database = await openDatabase(
     join(await getDatabasesPath(), 'geofencing.db'),
     // When the database is first created, create a table to store zones.
     onCreate: (db, version) {
@@ -51,8 +51,7 @@ Future<List<Zone>> getZones() async {
   final db = await database;
 
   // Query the table for all The Zones.
-  final List<Map<String, dynamic>> maps =
-      await db.rawQuery('SELECT * FROM zones WHERE type=?', ['zone']);
+  final List<Map<String, dynamic>> maps = await db.query('zones');
 
   // Convert the List<Map<String, dynamic> into a List<Zone>.
   return List.generate(maps.length, (i) {
@@ -68,13 +67,10 @@ Future<List<Zone>> getZones() async {
 
 //Get main zone
 Future<dynamic> getMainZone() async {
-  // Get a reference to the database.
-  final db = await database;
-
   // Query the table for all The Zones.
   final List<Map<String, dynamic>> maps =
-      await db.rawQuery('SELECT * FROM zones WHERE type=?', ['mainZone']);
-
+      await database.rawQuery('SELECT * FROM zones WHERE type=?', ['mainZone']);
+  print(maps);
   // Convert the List<Map<String, dynamic> into a List<Zone>.
   return Zone(
       id: maps[0]['id'],

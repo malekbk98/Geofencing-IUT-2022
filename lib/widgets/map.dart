@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
-import 'package:geofencing/models/Zone.dart';
 import 'package:latlong2/latlong.dart' as lat;
-import 'package:localstorage/localstorage.dart';
 import 'package:geofencing/data/DBHelper.dart' as dbHelper;
 
 class MapWidget extends StatefulWidget {
@@ -23,11 +21,10 @@ class _MapWidgetState extends State<MapWidget> {
 
   //Build main zone (terrain)
   buildMainZone() async {
+    print('im called');
     //Run this single time (async makes * calls so you need to break those calls)
     if (setMainZone == false) {
       dbHelper.getMainZone().then((value) {
-        setMainZone = true;
-        print('im called');
         //Execute after getMainZone finish loading (async)
         for (var item in value.coordonnees) {
           //Add to temp list of coord
@@ -75,7 +72,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    buildMainZone();
+    //buildMainZone();
     buildZones();
 
     return FlutterMap(

@@ -7,8 +7,8 @@ import 'package:geofencing/data/DBHelper.dart' as dbHelper;
 
 import 'DBHelper.dart';
 
-late List<Zone> zones;
-late Zone mainZone;
+late Future<List<Zone>> zones;
+late Future<dynamic> mainZone;
 late Database db;
 
 //Fetch main zone
@@ -73,6 +73,12 @@ initData() {
     fetchMainZone();
     //Load all zones
     fetchZones();
+
+    /**
+     * Load data from Database
+     */
+
+    zones = dbHelper.getZones();
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
