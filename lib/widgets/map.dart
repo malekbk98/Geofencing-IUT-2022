@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
@@ -19,50 +21,40 @@ class _MapWidgetState extends State<MapWidget> {
   bool setMainZone = false;
   bool setZones = false;
 
-  //Build main zone (terrain)
-  buildMainZone() async {
-    print('im called');
-    //Run this single time (async makes * calls so you need to break those calls)
-    if (setMainZone == false) {
-      dbHelper.getMainZone().then((value) {
-        //Execute after getMainZone finish loading (async)
-        for (var item in value.coordonnees) {
-          //Add to temp list of coord
-          mainPointsList.add(lat.LatLng(item[1], item[0]));
-        }
-
-        allZones.add(Polygon(
-          color: Colors.orange.withOpacity(0.2),
-          borderColor: Colors.orange.withOpacity(0.5),
-          borderStrokeWidth: 2,
-          points: mainPointsList,
-        ));
-
-        //Refresh state
-        setState(() {});
-      });
-    }
-  }
-
   //Build all zones
   void buildZones() {
+    late Polygon mainZone;
+
     if (setZones == false) {
       dbHelper.getZones().then((value) {
         setZones = true;
-        var i = 3325;
+        var i = 3025;
         for (var zone in value) {
           pointsList = [];
           for (var item in zone.coordonnees) {
             pointsList.add(lat.LatLng(item[1], item[0]));
           }
-          allZones.add(Polygon(
-            color: Color(0xff123456 + i * 100).withOpacity(0.5),
-            borderColor: Color(0xff123456 + i * 100).withOpacity(0.5),
-            borderStrokeWidth: 3,
-            points: pointsList,
-          ));
-          i = i + 999;
+          print(i);
+          if (zone.type == "mainZone") {
+            mainZone = Polygon(
+              color: Colors.orange.withOpacity(0.5),
+              borderColor: Colors.orange.withOpacity(0.5),
+              borderStrokeWidth: 3,
+              points: pointsList,
+            );
+          } else {
+            allZones.add(Polygon(
+              color: Color(0xff623456 + i * 100).withOpacity(0.7),
+              borderColor: Color(0xff123456 + i * 100).withOpacity(0.7),
+              borderStrokeWidth: 3,
+              points: pointsList,
+            ));
+          }
+          i = i + 96052;
         }
+
+        //Add main zone at the end
+        allZones.insert(0, mainZone);
 
         //Refresh state
         setState(() {});
@@ -72,7 +64,6 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //buildMainZone();
     buildZones();
 
     return FlutterMap(
