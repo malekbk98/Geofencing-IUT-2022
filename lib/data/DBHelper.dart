@@ -49,17 +49,16 @@ Future<List<Zone>> getZones() async {
   // Get a reference to the database.
   final db = await database;
 
-  // Query the table for all The Zones.
-  final List<Map<String, dynamic>> maps = await db.query('zones');
-
-  // Convert the List<Map<String, dynamic> into a List<Zone>.
-  return List.generate(maps.length, (i) {
-    return Zone(
-        id: maps[i]['id'],
-        status: maps[i]['status'],
-        nom: maps[i]['nom'],
-        type: maps[i]['type'],
-        description: maps[i]['description'],
-        coordonnees: jsonDecode(maps[i]['coordonnees']));
+  return db.query('zones').then((List<Map<String, dynamic>> maps) {
+    print(maps[0]);
+    List.generate(maps.length, (i) {
+      return Zone(
+          id: maps[i]['id'],
+          status: maps[i]['status'],
+          nom: maps[i]['nom'],
+          type: maps[i]['type'],
+          description: maps[i]['description'],
+          coordonnees: jsonDecode(maps[i]['coordonnees']));
+    });
   });
 }
