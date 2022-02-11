@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
+
 class SpotPage extends StatelessWidget {
+  const SpotPage({Key? key}) : super(key: key);
+
   
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -10,16 +13,13 @@ class SpotPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Les bornes'),
           centerTitle: true,
-          backgroundColor: Color.fromARGB(255, 39, 40, 43),
         ),
         body: 
         FutureBuilder(
           future: getTextData(),
           builder: (context, snapshot){
             if(snapshot.hasData){
-              return Container(
-                decoration: const BoxDecoration(color: Color.fromARGB(255, 78, 81, 92)),
-                child: SingleChildScrollView(
+              return SingleChildScrollView(
                   physics: const ScrollPhysics(),
                   child: Column(
                     children: <Widget>[
@@ -40,19 +40,9 @@ class SpotPage extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         data: snapshot.data.toString(),
                         shrinkWrap: true,
-                        styleSheet: MarkdownStyleSheet.fromTheme(
-                          ThemeData(
-                            textTheme: const TextTheme(
-                                headline6: TextStyle(fontSize: 20.0,color: Colors.yellow),
-                                headline5: TextStyle(fontSize: 20.0,color: Colors.yellow),
-                                bodyText2: TextStyle(fontSize: 16.0,color: Colors.white)
-                              )
-                            )
-                          ),
                       )
                     ],
                   ),
-                )
               );
             }
             return const Center(child: CircularProgressIndicator());
