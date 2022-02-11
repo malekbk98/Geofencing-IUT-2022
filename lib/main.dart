@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geofencing/data/loadData.dart';
+import 'package:geofencing/models/Zone.dart';
 import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:geofencing/data/DBHelper.dart' as dbHelper;
+import 'package:geofencing/data/loadData.dart' as dataLoader;
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const MyApp());
 }
 
@@ -12,11 +21,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    initData();
     return MaterialApp(
       title: 'Geofencing',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Accueil'),
     );
   }
@@ -31,24 +42,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: NavigationDrawerWidget(),
-      appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
-        centerTitle: true,
-      ),
-      body: HomeScreen(),
-    );
+        endDrawer: const NavigationDrawerWidget(),
+        appBar: AppBar(
+          title: Text(widget.title),
+          backgroundColor: const Color.fromRGBO(34, 36, 43, 1.0),
+          centerTitle: true,
+        ),
+        body: FutureBuilder(
+            future: dataLoader.zones,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (0 == 1) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                return const HomeScreen();
+              }
+            }));
   }
 }

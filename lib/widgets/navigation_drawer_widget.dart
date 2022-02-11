@@ -6,18 +6,20 @@ import 'package:geofencing/screens/zones.dart';
 import '../main.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
-  final padding = EdgeInsets.symmetric(horizontal: 10);
+  final padding = const EdgeInsets.symmetric(horizontal: 10);
+
+  const NavigationDrawerWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
         child: Material(
-      color: Color.fromRGBO(34, 36, 43, 1.0),
+      color: const Color.fromRGBO(34, 36, 43, 1.0),
       child: ListView(
         padding: padding,
         children: <Widget>[
           DrawerHeader(
-            child: new Image.asset("assets/logo.png"),
+            child: Image.asset("assets/logo.png"),
           ),
           const SizedBox(height: 16),
           buildMenuItem(
@@ -48,7 +50,7 @@ class NavigationDrawerWidget extends StatelessWidget {
     switch (i) {
       case 0:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => MyHomePage(
+          builder: (context) => const MyHomePage(
             title: 'Acceuil',
           ),
         ));
@@ -79,7 +81,7 @@ class NavigationDrawerWidget extends StatelessWidget {
       {
         InkWell(
           child: Container(
-            padding: padding.add(EdgeInsets.symmetric(vertical: 40)),
+            padding: padding.add(const EdgeInsets.symmetric(vertical: 40)),
             child: Row(
               children: [Image.asset('assets/images/logo.png')],
             ),
@@ -93,12 +95,12 @@ Widget buildMenuItem({
   required IconData icon,
   VoidCallback? onClicked,
 }) {
-  final color = Colors.white;
+  const color = Colors.white;
   final hoverColor = Colors.white70;
 
   return ListTile(
-    leading: Icon(icon, color: Color.fromRGBO(198, 120, 9, 1.0)),
-    title: Text(text, style: TextStyle(color: color)),
+    leading: Icon(icon, color: const Color.fromRGBO(198, 120, 9, 1.0)),
+    title: Text(text, style: const TextStyle(color: color)),
     hoverColor: hoverColor,
     onTap: onClicked,
   );
