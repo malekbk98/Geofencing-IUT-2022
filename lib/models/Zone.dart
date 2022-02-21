@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 class Zone {
@@ -29,7 +30,15 @@ class Zone {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Zone.fromMap(Map<String, dynamic> res)
+      : id = res["id"],
+        status = res['status'],
+        nom = res['nom'],
+        type = res['type'],
+        description = res['description'],
+        coordonnees = jsonDecode(res['coordonnees']);
+
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'status': status,
@@ -38,18 +47,6 @@ class Zone {
       'description': description,
       'coordonnees': coordonnees
     };
-  }
-
-  //From Map
-  static Zone fromMap(Map map) {
-    Zone zone = Zone(
-        id: map['id'],
-        status: map['status'],
-        nom: map['nom'],
-        type: map['type'],
-        description: map['description'],
-        coordonnees: map['coordonnees']);
-    return zone;
   }
 
   //To string

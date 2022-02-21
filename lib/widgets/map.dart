@@ -1,11 +1,10 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
 import 'package:latlong2/latlong.dart' as lat;
-import 'package:geofencing/data/DBHelper.dart' as dbHelper;
+
+import '../data/DatabaseHandler.dart';
+import '../models/Zone.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -16,34 +15,40 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   late List<Polygon> allZones = [];
+  late List<Zone> zoneList = [];
   late List<Polygon> zones = [];
   late List<lat.LatLng> mainPointsList = [];
   late List<lat.LatLng> pointsList = [];
   final MapController mapController = MapController();
+  late DatabaseHandler handler;
 
   @override
   void initState() {
     super.initState();
-    buildZones();
+    handler = DatabaseHandler();
+    handler.initializeDB().whenComplete(() async {
+      zoneList = await handler.getZones();
+      buildZones();
+      setState(() {});
+    });
   }
 
   buildZones() {
-    late Polygon mainZone;
-    dbHelper.getZones().then((value) {
-      if (value.isNotEmpty) {}
+    if (zoneList != []) {
+      print('ok');
       var i = 3025;
-      for (var zone in value) {
+      for (var zone in zoneList) {
         pointsList = [];
         for (var item in zone.coordonnees) {
           pointsList.add(lat.LatLng(item[1], item[0]));
         }
         if (zone.type == "mainZone") {
-          mainZone = Polygon(
+          zones.add(Polygon(
             color: Colors.orange.withOpacity(0.5),
             borderColor: Colors.orange.withOpacity(0.5),
             borderStrokeWidth: 3,
             points: pointsList,
-          );
+          ));
         } else {
           zones.add(Polygon(
             color: Color(0xff123456 + i * 100).withOpacity(0.7),
@@ -55,17 +60,14 @@ class _MapWidgetState extends State<MapWidget> {
         i = i + 96052;
       }
 
-      //Add main zone at the end
-      zones.add(mainZone);
-      setState(() {
-        allZones = zones;
-      });
-    });
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (allZones.isNotEmpty) {
+    print(zones);
+    if (zones.isNotEmpty) {
       return FlutterMap(
         mapController: mapController,
         options: MapOptions(
@@ -79,7 +81,7 @@ class _MapWidgetState extends State<MapWidget> {
           ],
         ),
         layers: [
-          PolygonLayerOptions(polygons: allZones),
+          PolygonLayerOptions(polygons: zones),
         ],
         children: <Widget>[
           TileLayerWidget(
