@@ -64,4 +64,36 @@ class DatabaseHandler {
     final List<Map<String, Object?>> queryResult = await db.query('zones');
     return queryResult.map((e) => Zone.fromMap(e)).toList();
   }
+
+// Create table idCheckUpdate
+  Future<Database> createTableIdUpdate() async {
+    String path = await getDatabasesPath();
+    return openDatabase(
+      join(path, 'geofencing.db'),
+      onCreate: (database, version) async {
+        await database.execute(
+          'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
+        );
+      },
+      version: 1,
+    );
+  }
+
+// Insert a idUpdate
+  Future<int> insertIdUpdate(int id) async {
+    int result = 0;
+    final Database db = await createTableIdUpdate();
+    result = await db.insert(
+      'idUpdate',
+      {
+        'id': 12345,
+        'idUpdate': id,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    print(id);
+
+    return result;
+  }
 }

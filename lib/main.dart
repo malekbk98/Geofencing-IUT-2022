@@ -50,13 +50,13 @@ class _MyHomePageState extends State<MyHomePage> {
         body: FutureBuilder(
             future: zones,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (1 == 2) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return const HomeScreen();
-              }
+              // if (1 == 2) {
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              // } else {
+              return const HomeScreen();
+              // }
             }));
   }
 }
