@@ -3,8 +3,10 @@ import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:geofencing/models/Zone.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/MainZone.dart';
+
 late Future<List<Zone>> zones;
-late Future<Zone> mainZone;
+late Future<MainZone> mainZone;
 late DatabaseHandler handler;
 
 String uriMainZone =
@@ -13,12 +15,12 @@ String uriZones =
     'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
 
 //Fetch main zone
-Future<Zone> fetchMainZone() async {
+Future<MainZone> fetchMainZone() async {
   final response = await http.get(Uri.parse(uriMainZone));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var data = jsonDecode(response.body)['data'][0];
-    var mainZone = Zone(
+    var mainZone = MainZone(
       id: data['id'],
       status: data['status'],
       nom: data['nom'],
@@ -29,8 +31,7 @@ Future<Zone> fetchMainZone() async {
 
     //Add to db
     handler.initializeDB().whenComplete(() async {
-      print("mainZoneGetFromAPI");
-      handler.insertZone(mainZone);
+      handler.insertMainZone(mainZone);
     });
     return mainZone;
   } else {
