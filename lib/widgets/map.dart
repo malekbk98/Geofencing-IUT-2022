@@ -4,6 +4,7 @@ import 'package:flutter_map_location/flutter_map_location.dart';
 import 'package:latlong2/latlong.dart' as lat;
 
 import '../data/DatabaseHandler.dart';
+import '../data/loadData.dart';
 import '../models/Zone.dart';
 
 class MapWidget extends StatefulWidget {
@@ -35,6 +36,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   buildZones() {
     if (zoneList != []) {
+      var foundMainZone = false;
       print('ok');
       var i = 3025;
       for (var zone in zoneList) {
@@ -49,6 +51,7 @@ class _MapWidgetState extends State<MapWidget> {
             borderStrokeWidth: 3,
             points: pointsList,
           ));
+          foundMainZone = true;
         } else {
           zones.add(Polygon(
             color: Color(0xff123456 + i * 100).withOpacity(0.7),
@@ -58,6 +61,12 @@ class _MapWidgetState extends State<MapWidget> {
           ));
         }
         i = i + 96052;
+      }
+
+      if (!foundMainZone) {
+        print('mainZoneNotfoundInMap');
+      } else {
+        print('mainZoneFoundInMap');
       }
 
       setState(() {});

@@ -15,7 +15,6 @@ String uriZones =
 //Fetch main zone
 Future<Zone> fetchMainZone() async {
   final response = await http.get(Uri.parse(uriMainZone));
-
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var data = jsonDecode(response.body)['data'][0];
@@ -30,6 +29,7 @@ Future<Zone> fetchMainZone() async {
 
     //Add to db
     handler.initializeDB().whenComplete(() async {
+      print("mainZoneGetFromAPI");
       handler.insertZone(mainZone);
     });
     return mainZone;
@@ -68,6 +68,8 @@ Future<List<Zone>> fetchZones() async {
     throw Exception('Failed to load zones');
   }
 }
+
+//Check internet connection
 
 initData() {
   try {

@@ -25,18 +25,34 @@ class DatabaseHandler {
   Future<int> insertZone(Zone zone) async {
     int result = 0;
     final Database db = await initializeDB();
-    result = await db.insert(
-      'zones',
-      {
-        'id': zone.id,
-        'nom': zone.nom,
-        'status': zone.status,
-        'type': zone.type,
-        'description': zone.description,
-        'coordonnees': jsonEncode(zone.coordonnees),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    if (zone.type == "mainZone") {
+      result = await db.insert(
+        'zones',
+        {
+          'id': 99999,
+          'nom': zone.nom,
+          'status': zone.status,
+          'type': zone.type,
+          'description': zone.description,
+          'coordonnees': jsonEncode(zone.coordonnees),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } else {
+      result = await db.insert(
+        'zones',
+        {
+          'id': zone.id,
+          'nom': zone.nom,
+          'status': zone.status,
+          'type': zone.type,
+          'description': zone.description,
+          'coordonnees': jsonEncode(zone.coordonnees),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    print(zone);
 
     return result;
   }

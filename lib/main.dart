@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
-import 'package:geofencing/data/loadData.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
