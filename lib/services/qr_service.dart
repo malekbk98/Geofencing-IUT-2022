@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:geofencing/theme/app_theme.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrService extends StatefulWidget {
@@ -33,7 +34,7 @@ class _QrServiceState extends State<QrService> {
   Widget build(BuildContext context) {
     if (result != null) {
       checkScanResult(result!.code!); // Got result do stuff here
-      // return Text('Result: ${result!.code}');
+      return Text('Result: ${result!.code}');
     }
 
     return SafeArea(
@@ -53,6 +54,7 @@ class _QrServiceState extends State<QrService> {
       key: qrKey,
       onQRViewCreated: _onQrViewCreated,
       overlay: QrScannerOverlayShape(
+        borderColor: AppTheme.mainColor,
         borderRadius: 10,
         borderLength: 30,
         borderWidth: 10,
@@ -81,5 +83,6 @@ class _QrServiceState extends State<QrService> {
     }
   }
 
-  void checkScanResult(String code) async {}
+  void checkScanResult(String code) {
+  }
 }
