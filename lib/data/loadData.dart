@@ -1,20 +1,19 @@
 import 'dart:convert';
 import 'package:geofencing/models/Zone.dart';
 import 'package:http/http.dart' as http;
-import 'package:localstorage/localstorage.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geofencing/data/DBHelper.dart' as dbHelper;
-
-import 'DBHelper.dart';
 
 late Future<List<Zone>> zones;
 late Future<dynamic> mainZone;
 late Database db;
+String uriMainZone =
+    'http://docketu.iutnc.univ-lorraine.fr:62004/items/terrain';
+String uriZones = 'http://docketu.iutnc.univ-lorraine.fr:62004/items/zone';
 
 //Fetch main zone
 void fetchMainZone() async {
-  final response = await http.get(Uri.parse(
-      'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=public_mine_token'));
+  final response = await http.get(Uri.parse(uriMainZone));
 
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -37,11 +36,9 @@ void fetchMainZone() async {
 
 //Fetch all zones
 void fetchZones() async {
-  final response = await http.get(Uri.parse(
-      'http://docketu.iutnc.univ-lorraine.fr:62000/items/zone?access_token=public_mine_token'));
+  final response = await http.get(Uri.parse(uriZones));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
-    List<Zone> tempZones = [];
     var data = jsonDecode(response.body)['data'];
     for (var zone in data) {
       var temp = Zone(

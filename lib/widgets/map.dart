@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -15,96 +16,100 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   late List<Polygon> allZones = [];
+  late List<Polygon> zones = [];
   late List<lat.LatLng> mainPointsList = [];
   late List<lat.LatLng> pointsList = [];
   final MapController mapController = MapController();
-  bool setMainZone = false;
-  bool setZones = false;
 
-  //Build all zones
-  void buildZones() {
+  @override
+  void initState() {
+    super.initState();
+    buildZones();
+  }
+
+  buildZones() {
     late Polygon mainZone;
-
-    if (setZones == false) {
-      dbHelper.getZones().then((value) {
-        setZones = true;
-        var i = 3025;
-        for (var zone in value) {
-          pointsList = [];
-          for (var item in zone.coordonnees) {
-            pointsList.add(lat.LatLng(item[1], item[0]));
-          }
-          print(i);
-          if (zone.type == "mainZone") {
-            mainZone = Polygon(
-              color: Colors.orange.withOpacity(0.5),
-              borderColor: Colors.orange.withOpacity(0.5),
-              borderStrokeWidth: 3,
-              points: pointsList,
-            );
-          } else {
-            allZones.add(Polygon(
-              color: Color(0xff623456 + i * 100).withOpacity(0.7),
-              borderColor: Color(0xff123456 + i * 100).withOpacity(0.7),
-              borderStrokeWidth: 3,
-              points: pointsList,
-            ));
-          }
-          i = i + 96052;
+    dbHelper.getZones().then((value) {
+      if (value.isNotEmpty) {}
+      var i = 3025;
+      for (var zone in value) {
+        pointsList = [];
+        for (var item in zone.coordonnees) {
+          pointsList.add(lat.LatLng(item[1], item[0]));
         }
+        if (zone.type == "mainZone") {
+          mainZone = Polygon(
+            color: Colors.orange.withOpacity(0.5),
+            borderColor: Colors.orange.withOpacity(0.5),
+            borderStrokeWidth: 3,
+            points: pointsList,
+          );
+        } else {
+          zones.add(Polygon(
+            color: Color(0xff123456 + i * 100).withOpacity(0.7),
+            borderColor: Color(0xff123456 + i * 100).withOpacity(0.9),
+            borderStrokeWidth: 3,
+            points: pointsList,
+          ));
+        }
+        i = i + 96052;
+      }
 
-        //Add main zone at the end
-        allZones.insert(0, mainZone);
-
-        //Refresh state
-        setState(() {});
+      //Add main zone at the end
+      zones.add(mainZone);
+      setState(() {
+        allZones = zones;
       });
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    buildZones();
-
-    return FlutterMap(
-      mapController: mapController,
-      options: MapOptions(
-        center: lat.LatLng(48.63122, 6.107505966858279),
-        minZoom: 18.0,
-        maxZoom: 18.0,
-        zoom: 18.0,
-        plugins: <MapPlugin>[
-          // USAGE NOTE 2: Add the plugin
-          LocationPlugin(),
+    if (allZones.isNotEmpty) {
+      return FlutterMap(
+        mapController: mapController,
+        options: MapOptions(
+          center: lat.LatLng(48.63122, 6.107505966858279),
+          minZoom: 18.0,
+          maxZoom: 18.0,
+          zoom: 18.0,
+          plugins: <MapPlugin>[
+            // USAGE NOTE 2: Add the plugin
+            LocationPlugin(),
+          ],
+        ),
+        layers: [
+          PolygonLayerOptions(polygons: allZones),
         ],
-      ),
-      layers: [
-        PolygonLayerOptions(polygons: allZones),
-      ],
-      children: <Widget>[
-        TileLayerWidget(
-          options: TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
+        children: <Widget>[
+          TileLayerWidget(
+            options: TileLayerOptions(
+              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              subdomains: ['a', 'b', 'c'],
+            ),
           ),
-        ),
-      ],
-      nonRotatedLayers: <LayerOptions>[
-        // USAGE NOTE 3: Add the options for the plugin
-        LocationOptions(
-          locationButton(),
-          onLocationUpdate: (LatLngData? ld) {
-            //print('Location updated: ${ld?.location} (accuracy: ${ld?.accuracy})');
-          },
-          onLocationRequested: (LatLngData? ld) {
-            if (ld == null) {
-              return;
-            }
-            //mapController.move(ld.location, 16.0); Move to current location
-          },
-        ),
-      ],
-    );
+        ],
+        nonRotatedLayers: <LayerOptions>[
+          // USAGE NOTE 3: Add the options for the plugin
+          LocationOptions(
+            locationButton(),
+            onLocationUpdate: (LatLngData? ld) {
+              //print('Location updated: ${ld?.location} (accuracy: ${ld?.accuracy})');
+            },
+            onLocationRequested: (LatLngData? ld) {
+              if (ld == null) {
+                return;
+              }
+              //mapController.move(ld.location, 16.0); Move to current location
+            },
+          ),
+        ],
+      );
+    } else {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 
   LocationButtonBuilder locationButton() {
