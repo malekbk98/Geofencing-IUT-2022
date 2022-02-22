@@ -1,13 +1,19 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:geofencing/models/Zone.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/MainZone.dart';
+
 late Future<List<Zone>> zones;
-late Future<Zone> mainZone;
+late Future<MainZone> mainZone;
 late DatabaseHandler handler;
+
 late Future<int> idUpdate;
 late Object? getId;
+
+late Future<int> dbIsEmptyOrNot;
 
 String uriMainZone =
     'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=public_mine_token';
@@ -17,12 +23,12 @@ String checkIdUpdate =
     'http://docketu.iutnc.univ-lorraine.fr:62000/revisions?sort=-id&limit=1&access_token=public_mine_token';
 
 //Fetch main zone
-Future<Zone> fetchMainZone() async {
+Future<MainZone> fetchMainZone() async {
   final response = await http.get(Uri.parse(uriMainZone));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var data = jsonDecode(response.body)['data'][0];
-    var mainZone = Zone(
+    var mainZone = MainZone(
       id: data['id'],
       status: data['status'],
       nom: data['nom'],
@@ -33,8 +39,7 @@ Future<Zone> fetchMainZone() async {
 
     //Add to db
     handler.initializeDB().whenComplete(() async {
-      print("mainZoneGetFromAPI");
-      handler.insertZone(mainZone);
+      handler.insertMainZone(mainZone);
     });
     return mainZone;
   } else {
@@ -62,7 +67,7 @@ Future<List<Zone>> fetchZones() async {
       //Add to return
       tempZones.add(temp);
 
-      //Add to db
+      //Add to db or not
       handler.initializeDB().whenComplete(() async {
         handler.insertZone(temp);
       });
@@ -82,14 +87,18 @@ Future<int> fetchIdUpdate() async {
 
     //Add to db
     handler.initializeDB().whenComplete(() async {
+      await handler.insertIdUpdate(idUpdate);
       getId = await handler.getLastIdUpdate();
-      print("fetch idUpdate GET from API : $idUpdate");
-      if (getId == idUpdate) {
-        print('ID\'s are the same, there is no update of id in the local db');
+      if (getId == null) {
       } else {
-        handler.insertIdUpdate(idUpdate);
-        print(
-            'ID\'s are NOT the same, so we update the idUpdate in the local db');
+        print("fetch idUpdate GET from API : $idUpdate");
+        if (getId != idUpdate) {
+          print('ID\'s are the same, there is no update of id in the local db');
+        } else {
+          handler.insertIdUpdate(idUpdate);
+          print(
+              'ID\'s are NOT the same, so we update the idUpdate in the local db');
+        }
       }
     });
     return idUpdate;
@@ -98,7 +107,16 @@ Future<int> fetchIdUpdate() async {
   }
 }
 
+Future<Object?> checkDbEmptyOrNote() async {
+  return handler.initializeDB().whenComplete(() async {
+    handler.dbIsEmptyOrNot();
+  });
+}
+
 //Check internet connection
+
+// si des données existe déjà : ne pas les ajouter à la db locale
+// si le id dans la db locale est inférieur à l'id récupéré avec l'api : fetch les datas avec API
 
 initData() {
   try {
@@ -106,21 +124,18 @@ initData() {
      * Load from APIs
      */
     //Load main zone
-    // si des données existe déjà : ne pas les ajouter à la db locale
-    // si le id dans la db locale est inférieur à l'id récupéré avec l'api : fetch les datas avec API
     handler = DatabaseHandler();
 
-    mainZone = fetchMainZone();
+    print(checkDbEmptyOrNote());
 
+    // isEmptyOrNot == 0 ? print('No data') : print('Have data');
+
+    mainZone = fetchMainZone();
     //Load all zones
     zones = fetchZones();
 
     //load idUpdate
-    idUpdate = fetchIdUpdate();
-
-    // handler.initializeDB().whenComplete(() async {
-    //   getId = await handler.getLastIdUpdate();
-    // });
+    // idUpdate = fetchIdUpdate();
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
