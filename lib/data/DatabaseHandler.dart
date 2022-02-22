@@ -24,9 +24,21 @@ class DatabaseHandler {
         await database.execute(
           'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
         );
+        await database.execute(
+          'INSERT INTO idUpdate(idUpdate) VALUES (0)',
+        );
       },
       version: 1,
     );
+  }
+
+//Reset table
+  Future<int> resetDb() async {
+    int result = 0;
+    final Database db = await initializeDB();
+    result = await db.rawDelete('DELETE FROM mainZones');
+    result = await db.rawDelete('DELETE FROM zones');
+    return result;
   }
 
 // Insert a zone
@@ -98,25 +110,22 @@ class DatabaseHandler {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    print(id);
-
+    print('update complete');
     return result;
   }
 
 // Get last idUpdate in sqflite
-  Future<Object?> getLastIdUpdate() async {
+  Future<String> getLastIdUpdate() async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResultId = await db
         .rawQuery('SELECT * FROM idUpdate ORDER BY idUpdate desc LIMIT 1');
-    print('Local DB last id update ${queryResultId[0]['idUpdate']}');
-    return queryResultId[0]['idUpdate'];
+    return queryResultId[0]['idUpdate'].toString();
   }
 
 //Count for empty DB or not
-  Future<Object?> dbIsEmptyOrNot() async {
+  Future<bool> dbIsEmptyOrNot() async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResult = await db.query('zones');
-    return queryResult.length;
+    return queryResult.isEmpty;
   }
 }

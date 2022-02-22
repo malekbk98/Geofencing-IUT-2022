@@ -13,17 +13,18 @@ late DatabaseHandler handler;
 late Future<int> idUpdate;
 late Object? getId;
 
-late Future<int> dbIsEmptyOrNot;
+bool dbIsEmpty = false;
 
 String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62090/items/terrain?access_token=public_mine_token';
 String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:62000/items/zone?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62090/items/zone?access_token=public_mine_token';
 String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:62000/revisions?sort=-id&limit=1&access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62090/revisions?sort=-id&limit=1&access_token=public_mine_token';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
+  print('fetch Main Zone');
   final response = await http.get(Uri.parse(uriMainZone));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -67,7 +68,7 @@ Future<List<Zone>> fetchZones() async {
       //Add to return
       tempZones.add(temp);
 
-      //Add to db or not
+      //Add to db
       handler.initializeDB().whenComplete(() async {
         handler.insertZone(temp);
       });
@@ -79,40 +80,47 @@ Future<List<Zone>> fetchZones() async {
 }
 
 //Fetch number of id about checkUpdate
-Future<int> fetchIdUpdate() async {
+Future<bool> fetchIdUpdate() async {
+  late bool res;
   final response = await http.get(Uri.parse(checkIdUpdate));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
-    var idUpdate = jsonDecode(response.body)['data'][0]['id'];
+    String idUpdate = jsonDecode(response.body)['data'][0]['id'].toString();
 
-    //Add to db
-    handler.initializeDB().whenComplete(() async {
-      await handler.insertIdUpdate(idUpdate);
-      getId = await handler.getLastIdUpdate();
-      if (getId == null) {
+    //get ID from db local
+    await handler.initializeDB();
+    String getId = await handler.getLastIdUpdate();
+    print(getId.toString() + " " + idUpdate.toString());
+    if (getId == null) {
+      print('getId is null');
+    } else {
+      if (getId != idUpdate) {
+        res = true;
       } else {
-        print("fetch idUpdate GET from API : $idUpdate");
-        if (getId != idUpdate) {
-          print('ID\'s are the same, there is no update of id in the local db');
-        } else {
-          handler.insertIdUpdate(idUpdate);
-          print(
-              'ID\'s are NOT the same, so we update the idUpdate in the local db');
-        }
+        res = false;
       }
-    });
-    return idUpdate;
+    }
+    print("result of update: " + res.toString());
+    return res;
   } else {
-    throw Exception('Failed to load main zone');
+    throw Exception('Failed to fetch ID');
   }
 }
 
-Future<Object?> checkDbEmptyOrNote() async {
-  return handler.initializeDB().whenComplete(() async {
-    handler.dbIsEmptyOrNot();
-  });
-}
+Future insertId() async {
+  final response = await http.get(Uri.parse(checkIdUpdate));
+  if (response.statusCode == 200) {
+    //Save result (need to be stored in cache later)
+    int idUpdate = jsonDecode(response.body)['data'][0]['id'];
 
+    //get ID from db local
+    handler.initializeDB().whenComplete(() async {
+      await handler.insertIdUpdate(idUpdate);
+    });
+  } else {
+    throw Exception('Failed to insert ID');
+  }
+}
 //Check internet connection
 
 // si des données existe déjà : ne pas les ajouter à la db locale
@@ -123,19 +131,26 @@ initData() {
     /**
      * Load from APIs
      */
-    //Load main zone
     handler = DatabaseHandler();
 
-    print(checkDbEmptyOrNote());
+    //Check db status (empty/not)
+    handler.dbIsEmptyOrNot().then((dbCheck) async {
+      //Check data version
+      bool updateCheck = await fetchIdUpdate();
+      print(dbCheck);
+      print(updateCheck);
+      if (dbCheck || updateCheck) {
+        await handler.resetDb();
 
-    // isEmptyOrNot == 0 ? print('No data') : print('Have data');
+        //Load main zone
+        await fetchMainZone();
+        //Load all zones
+        await fetchZones();
 
-    mainZone = fetchMainZone();
-    //Load all zones
-    zones = fetchZones();
-
-    //load idUpdate
-    // idUpdate = fetchIdUpdate();
+        //Update last change id
+        //insertId();
+      }
+    });
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
