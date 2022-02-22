@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/theme/app_theme.dart';
 
 class ZoneCard extends StatelessWidget {
   final String title;
@@ -21,7 +22,7 @@ class ZoneCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
-          colorFilter: const ColorFilter.mode(Color.fromRGBO(0, 0, 0, .6), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(AppTheme.fadedBackground, BlendMode.dstATop),
           image: image,
           fit: BoxFit.fitWidth,
           alignment: Alignment.topCenter,

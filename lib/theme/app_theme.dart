@@ -4,6 +4,7 @@ class AppTheme {
   static Color mainColor = const Color.fromRGBO(198, 120, 9, 1.0);
   static Color dark = const Color.fromRGBO(34, 36, 43, 1.0);
   static Color background = const Color.fromARGB(255, 49, 51, 58);
+  static Color fadedBackground = const Color.fromRGBO(34, 36, 43, .3);
 
   static TextTheme textTheme = TextTheme(
     headline6: TextStyle(

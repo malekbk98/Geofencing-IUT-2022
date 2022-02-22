@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/theme/app_theme.dart';
 
 class SpotCard extends StatelessWidget {
   final String title;
@@ -18,7 +19,7 @@ class SpotCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
-          colorFilter: const ColorFilter.mode(Color.fromRGBO(0, 0, 0, .5), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(AppTheme.fadedBackground, BlendMode.dstATop),
           image: image,
           fit: BoxFit.fitHeight,
           alignment: Alignment.topCenter,
