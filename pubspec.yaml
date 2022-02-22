@@ -40,6 +40,9 @@ dependencies:
   flutter_map_location: any
   localstorage: ^4.0.0+1
   sqflite: ^2.0.2
+  flutter_local_notifications: ^9.3.2
+  flutter_geofence: ^0.4.2
+  poly_geofence_service: ^1.5.8
 
 dev_dependencies:
   flutter_test:
