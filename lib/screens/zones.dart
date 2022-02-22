@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/widgets/zone_card.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 class ZonesScreen extends StatelessWidget {
+  const ZonesScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        endDrawer: NavigationDrawerWidget(),
+       endDrawer: const NavigationDrawerWidget(),
         appBar: AppBar(
-          title: Text('Les zones'),
+          title: const Text('Les zones'),
           centerTitle: true,
-          backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
         ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const <Widget>[
+                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+                ],
+              ),
+            ),
+          ),
       );
 }

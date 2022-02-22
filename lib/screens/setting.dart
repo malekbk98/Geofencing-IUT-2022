@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 class SettingScreen extends StatelessWidget {
+  const SettingScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        endDrawer: NavigationDrawerWidget(),
+        endDrawer: const NavigationDrawerWidget(),
         appBar: AppBar(
-          title: Text('Paramètres'),
+          title: const Text('Paramètres'),
           centerTitle: true,
-          backgroundColor: Color.fromRGBO(34, 36, 43, 1.0),
         ),
       );
 }

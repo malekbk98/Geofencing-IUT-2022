@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geofencing/screens/setting.dart';
 import 'package:geofencing/screens/spots.dart';
 import 'package:geofencing/screens/zones.dart';
+import 'package:geofencing/theme/app_theme.dart';
 
 import '../main.dart';
 
@@ -14,7 +15,7 @@ class NavigationDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
         child: Material(
-      color: const Color.fromRGBO(34, 36, 43, 1.0),
+      color: AppTheme.dark,
       child: ListView(
         padding: padding,
         children: <Widget>[
@@ -58,13 +59,13 @@ class NavigationDrawerWidget extends StatelessWidget {
 
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ZonesScreen(),
+          builder: (context) => const ZonesScreen(),
         ));
         break;
 
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SpotsScreen(),
+          builder: (context) => const SpotsScreen(),
         ));
         break;
 
@@ -95,13 +96,10 @@ Widget buildMenuItem({
   required IconData icon,
   VoidCallback? onClicked,
 }) {
-  const color = Colors.white;
-  final hoverColor = Colors.white70;
 
   return ListTile(
-    leading: Icon(icon, color: const Color.fromRGBO(198, 120, 9, 1.0)),
-    title: Text(text, style: const TextStyle(color: color)),
-    hoverColor: hoverColor,
+    leading: Icon(icon, color: AppTheme.mainColor),
+    title: Text(text),
     onTap: onClicked,
   );
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/screens/home.dart';
+import 'package:geofencing/services/qr_service.dart';
+import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 void main() {
@@ -20,11 +22,9 @@ class MyApp extends StatelessWidget {
     initData();
     return MaterialApp(
       title: 'Geofencing',
-      theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
-      ),
-      debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
       home: const MyHomePage(title: 'Accueil'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -48,15 +48,25 @@ class _MyHomePageState extends State<MyHomePage> {
           centerTitle: true,
         ),
         body: FutureBuilder(
-            future: zones,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (1 == 2) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return const HomeScreen();
-              }
-            }));
+          future: zones,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (1 == 2) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return const HomeScreen();
+            }
+          }),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: AppTheme.mainColor,
+          child: const Icon(Icons.qr_code),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const QrService(),
+              ));
+          }
+        ),
+    );
   }
 }

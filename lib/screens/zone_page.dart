@@ -1,25 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:geofencing/widgets/map.dart';
+import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class ZonePage extends StatelessWidget {
+  const ZonePage({Key? key}) : super(key: key);
 
+  
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const ScrollPhysics(),
-      child: Column(
-        children: const <Widget>[
-          Card(
-            child: SizedBox(
-                  height: 300,
-                  child: MapWidget(),
-                ),
-          ),
-          Markdown(
-            physics: NeverScrollableScrollPhysics(),
-            data: '''
+  Widget build(BuildContext context) => Scaffold(
+        endDrawer: const NavigationDrawerWidget(),
+        appBar: AppBar(
+          title: const Text('Les bornes'),
+          centerTitle: true,
+        ),
+        body: 
+        FutureBuilder(
+          future: getTextData(),
+          builder: (context, snapshot){
+            if(snapshot.hasData){
+              return SingleChildScrollView(
+                  physics: const ScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: Image.network(
+                          'https://placeimg.com/640/480/any',
+                          fit: BoxFit.fill,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 5,
+                        margin: const EdgeInsets.all(10),
+                      ),
+                      Markdown(
+                        physics: const NeverScrollableScrollPhysics(),
+                        data: snapshot.data.toString(),
+                        shrinkWrap: true,
+                      )
+                    ],
+                  ),
+              );
+            }
+            return const Center(child: CircularProgressIndicator());
+          }
+        ),
+      );
+
+  Future<String> getTextData() async{
+    return '''
 ## Overview
 
 ### Philosophy
@@ -61,11 +92,6 @@ cosmetic -- you can use this if you think it looks better. The
 closing hashes don't even need to match the number of hashes
 used to open the header. (The number of opening hashes
 determines the header level.)
-''',
-            shrinkWrap: true,
-          )
-        ],
-      ),
-    );
+''';
   }
 }
