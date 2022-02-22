@@ -7,6 +7,7 @@ late Future<List<Zone>> zones;
 late Future<Zone> mainZone;
 late DatabaseHandler handler;
 late Future<int> idUpdate;
+late Object? getId;
 
 String uriMainZone =
     'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=public_mine_token';
@@ -78,12 +79,18 @@ Future<int> fetchIdUpdate() async {
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var idUpdate = jsonDecode(response.body)['data'][0]['id'];
-    print("fetch idUpdate GET from API : $idUpdate");
 
     //Add to db
     handler.initializeDB().whenComplete(() async {
-      print("fetch idUpdate GET from API");
-      handler.insertIdUpdate(idUpdate);
+      getId = await handler.getLastIdUpdate();
+      print("fetch idUpdate GET from API : $idUpdate");
+      if (getId == idUpdate) {
+        print('ID\'s are the same, there is no update of id in the local db');
+      } else {
+        handler.insertIdUpdate(idUpdate);
+        print(
+            'ID\'s are NOT the same, so we update the idUpdate in the local db');
+      }
     });
     return idUpdate;
   } else {
@@ -99,6 +106,8 @@ initData() {
      * Load from APIs
      */
     //Load main zone
+    // si des données existe déjà : ne pas les ajouter à la db locale
+    // si le id dans la db locale est inférieur à l'id récupéré avec l'api : fetch les datas avec API
     handler = DatabaseHandler();
 
     mainZone = fetchMainZone();
@@ -108,6 +117,10 @@ initData() {
 
     //load idUpdate
     idUpdate = fetchIdUpdate();
+
+    // handler.initializeDB().whenComplete(() async {
+    //   getId = await handler.getLastIdUpdate();
+    // });
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());

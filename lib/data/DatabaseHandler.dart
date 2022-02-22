@@ -85,4 +85,13 @@ class DatabaseHandler {
 
     return result;
   }
+
+// Get last idUpdate in sqflite
+  Future<Object?> getLastIdUpdate() async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> queryResultId = await db
+        .rawQuery('SELECT * FROM idUpdate ORDER BY idUpdate desc LIMIT 1');
+    print('Local DB last id update ${queryResultId[0]['idUpdate']}');
+    return queryResultId[0]['idUpdate'];
+  }
 }
