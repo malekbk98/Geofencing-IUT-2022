@@ -9,11 +9,11 @@ late DatabaseHandler handler;
 late Future<int> idUpdate;
 
 String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:62007/items/terrain?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62000/items/terrain?access_token=public_mine_token';
 String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62000/items/zone?access_token=public_mine_token';
 String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:62007/revisions?sort=-id&limit=1&access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62000/revisions?sort=-id&limit=1&access_token=public_mine_token';
 
 //Fetch main zone
 Future<Zone> fetchMainZone() async {
@@ -72,16 +72,16 @@ Future<List<Zone>> fetchZones() async {
   }
 }
 
-//Fetch main zone
+//Fetch number of id about checkUpdate
 Future<int> fetchIdUpdate() async {
   final response = await http.get(Uri.parse(checkIdUpdate));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var idUpdate = jsonDecode(response.body)['data'][0]['id'];
-    print("fetch idUpdate GET from API : ${idUpdate}");
+    print("fetch idUpdate GET from API : $idUpdate");
 
     //Add to db
-    handler.createTableIdUpdate().whenComplete(() async {
+    handler.initializeDB().whenComplete(() async {
       print("fetch idUpdate GET from API");
       handler.insertIdUpdate(idUpdate);
     });
