@@ -16,6 +16,9 @@ class DatabaseHandler {
         await database.execute(
           'CREATE TABLE zones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
         );
+        await database.execute(
+          'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
+        );
       },
       version: 1,
     );
@@ -65,24 +68,10 @@ class DatabaseHandler {
     return queryResult.map((e) => Zone.fromMap(e)).toList();
   }
 
-// Create table idCheckUpdate
-  Future<Database> createTableIdUpdate() async {
-    String path = await getDatabasesPath();
-    return openDatabase(
-      join(path, 'geofencing.db'),
-      onCreate: (database, version) async {
-        await database.execute(
-          'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
-        );
-      },
-      version: 1,
-    );
-  }
-
 // Insert a idUpdate
   Future<int> insertIdUpdate(int id) async {
     int result = 0;
-    final Database db = await createTableIdUpdate();
+    final Database db = await initializeDB();
     result = await db.insert(
       'idUpdate',
       {
