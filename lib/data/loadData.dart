@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:geofencing/models/Zone.dart';
@@ -9,13 +10,25 @@ late Future<List<Zone>> zones;
 late Future<MainZone> mainZone;
 late DatabaseHandler handler;
 
+late Future<int> idUpdate;
+late Object? getId;
+
+bool dbIsEmpty = false;
+
 String uriMainZone =
     'http://docketu.iutnc.univ-lorraine.fr:62007/items/terrain?access_token=public_mine_token';
 String uriZones =
+<<<<<<< HEAD
     'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
+=======
+    'http://docketu.iutnc.univ-lorraine.fr:62090/items/zone?access_token=public_mine_token';
+String checkIdUpdate =
+    'http://docketu.iutnc.univ-lorraine.fr:62090/revisions?sort=-id&limit=1&access_token=public_mine_token';
+>>>>>>> 3c142b97b67f0f03118be41bef70c9a80367b740
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
+  print('fetch Main Zone');
   final response = await http.get(Uri.parse(uriMainZone));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -70,20 +83,78 @@ Future<List<Zone>> fetchZones() async {
   }
 }
 
+//Fetch number of id about checkUpdate
+Future<bool> fetchIdUpdate() async {
+  late bool res;
+  final response = await http.get(Uri.parse(checkIdUpdate));
+  if (response.statusCode == 200) {
+    //Save result (need to be stored in cache later)
+    String idUpdate = jsonDecode(response.body)['data'][0]['id'].toString();
+
+    //get ID from db local
+    await handler.initializeDB();
+    String getId = await handler.getLastIdUpdate();
+    print(getId.toString() + " " + idUpdate.toString());
+    if (getId == null) {
+      print('getId is null');
+    } else {
+      if (getId != idUpdate) {
+        res = true;
+      } else {
+        res = false;
+      }
+    }
+    print("result of update: " + res.toString());
+    return res;
+  } else {
+    throw Exception('Failed to fetch ID');
+  }
+}
+
+Future insertId() async {
+  final response = await http.get(Uri.parse(checkIdUpdate));
+  if (response.statusCode == 200) {
+    //Save result (need to be stored in cache later)
+    int idUpdate = jsonDecode(response.body)['data'][0]['id'];
+
+    //get ID from db local
+    handler.initializeDB().whenComplete(() async {
+      await handler.insertIdUpdate(idUpdate);
+    });
+  } else {
+    throw Exception('Failed to insert ID');
+  }
+}
 //Check internet connection
+
+// si des données existe déjà : ne pas les ajouter à la db locale
+// si le id dans la db locale est inférieur à l'id récupéré avec l'api : fetch les datas avec API
 
 initData() {
   try {
     /**
      * Load from APIs
      */
-    //Load main zone
     handler = DatabaseHandler();
 
-    mainZone = fetchMainZone();
+    //Check db status (empty/not)
+    handler.dbIsEmptyOrNot().then((dbCheck) async {
+      //Check data version
+      bool updateCheck = await fetchIdUpdate();
+      print(dbCheck);
+      print(updateCheck);
+      if (dbCheck || updateCheck) {
+        await handler.resetDb();
 
-    //Load all zones
-    zones = fetchZones();
+        //Load main zone
+        await fetchMainZone();
+        //Load all zones
+        await fetchZones();
+
+        //Update last change id
+        //insertId();
+      }
+    });
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
