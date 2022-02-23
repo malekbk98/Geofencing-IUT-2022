@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:poly_geofence_service/models/poly_geofence.dart';
 import 'package:poly_geofence_service/poly_geofence_service.dart';
 
+import 'package:geofencing/services/check_connection.dart';
+
 import '../data/DatabaseHandler.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // This function is to be called when the location has changed.
   void _onLocationChanged(Location location) {
-    print('location: ${location.toJson()}');
+    // print('location: ${location.toJson()}');
   }
 
   // This function is to be called when a location services status change occurs
@@ -81,6 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    //call for check connection state (wifi | mobile | none)
+    bool isOnline = CheckConnection.initializeCheck();
 
     handler = DatabaseHandler();
     handler.initializeDB().whenComplete(() async {
@@ -120,15 +125,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Column(
-            children: const <Widget>[
-               Card(
-                child: SizedBox(
-                  height: 250,
-                  child: MapWidget(),
-                ),
-          ),
-          Expanded(child:Markdown(
-            data: '''# Overview
+          children: const <Widget>[
+            Card(
+              child: SizedBox(
+                height: 250,
+                child: MapWidget(),
+              ),
+            ),
+            Expanded(
+              child: Markdown(
+                data: '''# Overview
 
 ### Philosophy
 
@@ -213,13 +219,12 @@ and code blocks:
 > 2.   This is the second list item.
 > 
 > Here''',
-            shrinkWrap: true,
-          ),
-          ),
-        ],
-      ),
-  );
-  
+                shrinkWrap: true,
+              ),
+            ),
+          ],
+        ),
+      );
 
   @override
   void dispose() {
