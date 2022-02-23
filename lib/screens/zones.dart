@@ -2,12 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:geofencing/widgets/zone_card.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
-class ZonesScreen extends StatelessWidget {
+import '../data/DatabaseHandler.dart';
+import '../models/Zone.dart';
+
+class ZonesScreen extends StatefulWidget {
   const ZonesScreen({Key? key}) : super(key: key);
 
   @override
+  State<ZonesScreen> createState() => _ZonesScreenState();
+}
+
+class _ZonesScreenState extends State<ZonesScreen> {
+  late DatabaseHandler handler;
+  late List<Zone> zones;
+
+  @override
+  void initState() {
+    super.initState();
+
+    handler = DatabaseHandler();
+    handler.initializeDB().whenComplete(() async {
+      //Get all zones from db
+      zones = await handler.getZones();
+      setState(() {});
+      print(zones);
+
+      // for (var zone in temp) {
+      //   late List<LatLng> pointsList = [];
+      //   for (var item in zone.coordonnees) {
+      //     pointsList.add(LatLng(item[1], item[0]));
+      //   }
+
+      //   //Update state
+      // setState(() {});
+      // }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
-       endDrawer: const NavigationDrawerWidget(),
+        endDrawer: const NavigationDrawerWidget(),
         appBar: AppBar(
           title: const Text('Les zones'),
           centerTitle: true,
@@ -15,19 +49,31 @@ class ZonesScreen extends StatelessWidget {
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const <Widget>[
-                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-                  ZoneCard('Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+              children: zones
+                  .map((zone) => ZoneCard(zone.nom,
+                      NetworkImage('https://placeimg.com/640/480/any')))
+                  .toList(),
+
+              // children: const <Widget>[
+              //   ZoneCard(
+              //       'Zone', NetworkImage('https://placeimg.com/640/480/any')),
+              //   ZoneCard(
+              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+              //   ZoneCard(
+              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+              //   ZoneCard(
+              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+              //   ZoneCard(
+              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+              //   ZoneCard(
+              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
+              // ],
             ),
           ),
+        ),
       );
 }
