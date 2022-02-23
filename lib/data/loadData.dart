@@ -156,32 +156,37 @@ Future insertId() async {
 }
 //Check internet connection
 
-initData() {
+initData() async {
   try {
     /**
      * Load from APIs
      */
     handler = DatabaseHandler();
+
     //Check db status (empty/not)
-    handler.dbIsEmptyOrNot().then((dbCheck) async {
-      //Check data version
-      bool updateCheck = await fetchIdUpdate();
-      if (dbCheck || updateCheck) {
-        await handler.resetDb();
+    bool dbCheck = await handler.dbIsEmptyOrNot();
 
-        //Load main zone
-        await fetchMainZone();
+    //Check data version
+    bool updateCheck = await fetchIdUpdate();
+    if (dbCheck || updateCheck) {
+      await handler.resetDb();
 
-        //Load all zones
-        await fetchZones();
+      //Load main zone
+      await fetchMainZone();
 
-        //Load all articles
-        await fetchArticles();
+      //Load all zones
+      await fetchZones();
 
-        //Update last change id
-        insertId();
-      }
-    });
+      //Load all articles
+      await fetchArticles();
+
+      //Update last change id
+      await insertId();
+
+      return true;
+    } else {
+      return true;
+    }
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
