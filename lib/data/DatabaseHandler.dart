@@ -136,7 +136,7 @@ class DatabaseHandler {
     return queryResult.map((e) => MainZone.fromMap(e)).toList();
   }
 
-// Insert a idUpdate
+//Insert a idUpdate
   Future<int> insertIdUpdate(int id) async {
     int result = 0;
     final Database db = await initializeDB();
@@ -148,7 +148,6 @@ class DatabaseHandler {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('update complete');
     return result;
   }
 
@@ -165,5 +164,13 @@ class DatabaseHandler {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResult = await db.query('zones');
     return queryResult.isEmpty;
+  }
+
+  //Get article by id
+  Future<List<Article>> getArticle(int id) async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> result =
+        await db.rawQuery('SELECT * FROM articles WHERE zoneId=?', [id]);
+    return result.map((e) => Article.fromMap(e)).toList();
   }
 }
