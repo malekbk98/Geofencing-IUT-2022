@@ -10,9 +10,9 @@ late Future<MainZone> mainZone;
 late DatabaseHandler handler;
 
 String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/items/terrain?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62007/items/terrain?access_token=public_mine_token';
 String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:620/items/zone?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
