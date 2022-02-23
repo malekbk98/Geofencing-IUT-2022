@@ -16,15 +16,15 @@ late Object? getId;
 bool dbIsEmpty = false;
 
 String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/items/terrain?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62007/items/terrain?access_token=public_mine_token';
 String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/items/zone?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
 String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/revisions?sort=-id&limit=1&access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:62007/revisions?sort=-id&limit=1&access_token=public_mine_token';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
-  print('fetch Main Zone');
+  // print('fetch Main Zone');
   final response = await http.get(Uri.parse(uriMainZone));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -90,9 +90,9 @@ Future<bool> fetchIdUpdate() async {
     //get ID from db local
     await handler.initializeDB();
     String getId = await handler.getLastIdUpdate();
-    print(getId.toString() + " " + idUpdate.toString());
+    // print(getId.toString() + " " + idUpdate.toString());
     if (getId == null) {
-      print('getId is null');
+      // print('getId is null');
     } else {
       if (getId != idUpdate) {
         res = true;
@@ -100,7 +100,7 @@ Future<bool> fetchIdUpdate() async {
         res = false;
       }
     }
-    print("result of update: " + res.toString());
+    // print("result of update: " + res.toString());
     return res;
   } else {
     throw Exception('Failed to fetch ID');
@@ -121,24 +121,22 @@ Future insertId() async {
     throw Exception('Failed to insert ID');
   }
 }
-//Check internet connection
 
 // si des données existe déjà : ne pas les ajouter à la db locale
 // si le id dans la db locale est inférieur à l'id récupéré avec l'api : fetch les datas avec API
 
-initData() {
+initData() async {
   try {
     /**
      * Load from APIs
      */
     handler = DatabaseHandler();
 
-    //Check db status (empty/not)
     handler.dbIsEmptyOrNot().then((dbCheck) async {
       //Check data version
       bool updateCheck = await fetchIdUpdate();
-      print(dbCheck);
-      print(updateCheck);
+      // print(dbCheck);
+      // print(updateCheck);
       if (dbCheck || updateCheck) {
         await handler.resetDb();
 
@@ -146,11 +144,13 @@ initData() {
         await fetchMainZone();
         //Load all zones
         await fetchZones();
-
+        print('fetch Main Zones & all zones done');
         //Update last change id
         //insertId();
       }
     });
+
+    //Check db status (empty/not)
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
