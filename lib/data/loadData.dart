@@ -15,16 +15,24 @@ late Object? getId;
 
 bool dbIsEmpty = false;
 
-String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:62007/items/terrain?access_token=public_mine_token';
-String uriZones =
-<<<<<<< HEAD
-    'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
-=======
-    'http://docketu.iutnc.univ-lorraine.fr:62090/items/zone?access_token=public_mine_token';
+String port = '62007';
+String api = 'http://docketu.iutnc.univ-lorraine.fr:$port/items/';
+String token_mine = 'access_token=public_mine_token';
+// String token_iut = 'public_iut_token';
+
+String uriMainZone = api + 'terrain?' + token_mine;
+String uriZones = api + 'zone?' + token_mine;
+// 'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
 String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/revisions?sort=-id&limit=1&access_token=public_mine_token';
->>>>>>> 3c142b97b67f0f03118be41bef70c9a80367b740
+    uriZones = api + 'revision?sort=-id&limit=1&' + token_mine;
+
+// String uriMainZone =
+//     'http://docketu.iutnc.univ-lorraine.fr:62007/items/terrain?access_token=public_mine_token';
+// String uriZones =
+//     'http://docketu.iutnc.univ-lorraine.fr:62007/items/zone?access_token=public_mine_token';
+//     'http://docketu.iutnc.univ-lorraine.fr:62090/items/zone?access_token=public_mine_token';
+// String checkIdUpdate =
+//     'http://docketu.iutnc.univ-lorraine.fr:62090/revisions?sort=-id&limit=1&access_token=public_mine_token';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
