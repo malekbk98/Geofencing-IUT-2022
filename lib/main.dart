@@ -41,13 +41,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        endDrawer: const NavigationDrawerWidget(),
-        appBar: AppBar(
-          title: Text(widget.title),
-          backgroundColor: const Color.fromRGBO(34, 36, 43, 1.0),
-          centerTitle: true,
-        ),
-        body: FutureBuilder(
+      endDrawer: const NavigationDrawerWidget(),
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: const Color.fromRGBO(34, 36, 43, 1.0),
+        centerTitle: true,
+      ),
+      body: FutureBuilder(
           future: zones,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (1 == 2) {
@@ -58,15 +58,14 @@ class _MyHomePageState extends State<MyHomePage> {
               return const HomeScreen();
             }
           }),
-        floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           backgroundColor: AppTheme.mainColor,
           child: const Icon(Icons.qr_code),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const QrService(),
-              ));
-          }
-        ),
+              builder: (context) => const QrService(),
+            ));
+          }),
     );
   }
 }

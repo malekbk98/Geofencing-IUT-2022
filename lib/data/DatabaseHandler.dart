@@ -21,9 +21,24 @@ class DatabaseHandler {
         await database.execute(
           'CREATE TABLE mainZones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
         );
+        await database.execute(
+          'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
+        );
+        await database.execute(
+          'INSERT INTO idUpdate(idUpdate) VALUES (0)',
+        );
       },
       version: 1,
     );
+  }
+
+//Reset table
+  Future<int> resetDb() async {
+    int result = 0;
+    final Database db = await initializeDB();
+    result = await db.rawDelete('DELETE FROM mainZones');
+    result = await db.rawDelete('DELETE FROM zones');
+    return result;
   }
 
 // Insert a zone
@@ -75,11 +90,42 @@ class DatabaseHandler {
     return queryResult.map((e) => Zone.fromMap(e)).toList();
   }
 
-  //Get main zones
+//Get main zones
   Future<List<MainZone>> getMainZones() async {
     // Get a reference to the database.
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResult = await db.query('mainZones');
     return queryResult.map((e) => MainZone.fromMap(e)).toList();
+  }
+
+// Insert a idUpdate
+  Future<int> insertIdUpdate(int id) async {
+    int result = 0;
+    final Database db = await initializeDB();
+    result = await db.insert(
+      'idUpdate',
+      {
+        'id': 12345,
+        'idUpdate': id,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print('update complete');
+    return result;
+  }
+
+// Get last idUpdate in sqflite
+  Future<String> getLastIdUpdate() async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> queryResultId = await db
+        .rawQuery('SELECT * FROM idUpdate ORDER BY idUpdate desc LIMIT 1');
+    return queryResultId[0]['idUpdate'].toString();
+  }
+
+//Count for empty DB or not
+  Future<bool> dbIsEmptyOrNot() async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> queryResult = await db.query('zones');
+    return queryResult.isEmpty;
   }
 }
