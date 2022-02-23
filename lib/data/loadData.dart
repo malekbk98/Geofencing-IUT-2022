@@ -154,7 +154,6 @@ Future insertId() async {
     throw Exception('Failed to insert ID');
   }
 }
-//Check internet connection
 
 initData() {
   try {
@@ -182,6 +181,8 @@ initData() {
         insertId();
       }
     });
+
+    //Check db status (empty/not)
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());

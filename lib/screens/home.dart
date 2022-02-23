@@ -5,6 +5,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:geofencing/widgets/map.dart';
 import 'package:poly_geofence_service/poly_geofence_service.dart';
 
+import 'package:geofencing/services/check_connection.dart';
+
 import '../data/DatabaseHandler.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -66,6 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    //call for check connection state (wifi | mobile | none)
+    bool isOnline = CheckConnection.initializeCheck();
 
     handler = DatabaseHandler();
     handler.initializeDB().whenComplete(() async {
