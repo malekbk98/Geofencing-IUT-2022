@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geofencing/models/Zone.dart';
 
+import '../models/Article.dart';
 import '../models/MainZone.dart';
 
 late List<Zone> zones;
@@ -15,17 +16,30 @@ class DatabaseHandler {
     return openDatabase(
       join(path, 'geofencing.db'),
       onCreate: (database, version) async {
+        //Create zones table
         await database.execute(
           'CREATE TABLE zones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
         );
+
+        //Create mainZones table
         await database.execute(
           'CREATE TABLE mainZones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
         );
+
+        //Create idUpdate table
         await database.execute(
           'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
         );
+
+        //Insert default update id (0)
         await database.execute(
           'INSERT INTO idUpdate(idUpdate) VALUES (0)',
+        );
+
+        //Create Articles table
+        //Create mainZones table
+        await database.execute(
+          'CREATE TABLE articles(id INTEGER PRIMARY KEY, title TEXT, author TEXT,content TEXT, img TEXT, spotId INTEGER DEFAULT NULL , zoneId INTEGER DEFAULT NULL )',
         );
       },
       version: 1,
@@ -38,6 +52,7 @@ class DatabaseHandler {
     final Database db = await initializeDB();
     result = await db.rawDelete('DELETE FROM mainZones');
     result = await db.rawDelete('DELETE FROM zones');
+    result = await db.rawDelete('DELETE FROM articles');
     return result;
   }
 
@@ -75,6 +90,29 @@ class DatabaseHandler {
         'type': zone.type,
         'description': zone.description,
         'coordonnees': jsonEncode(zone.coordonnees),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    return result;
+  }
+
+// Insert a zone
+  Future<int> insertArticle(Article article) async {
+    int result = 0;
+    //print(article);
+
+    final Database db = await initializeDB();
+    result = await db.insert(
+      'articles',
+      {
+        'id': article.id,
+        'title': article.title,
+        'author': article.author,
+        'content': article.content,
+        'img': article.img,
+        'spotId': article.spotId,
+        'zoneId': article.zoneId,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
