@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:geofencing/widgets/map.dart';
-import 'package:http/http.dart' as http;
-import 'package:poly_geofence_service/models/poly_geofence.dart';
 import 'package:poly_geofence_service/poly_geofence_service.dart';
 
 import '../data/DatabaseHandler.dart';
@@ -30,44 +28,24 @@ class _HomeScreenState extends State<HomeScreen> {
       allowMockLocations: true,
       printDevLog: true);
 
-  // Create a [PolyGeofence] list.
-  final _polyGeofenceList = <PolyGeofence>[
-    PolyGeofence(
-      id: 'Zone 1',
-      data: {
-        'address': 'Crous ',
-        'about': 'Bla Bla Bla',
-      },
-      polygon: <LatLng>[
-        const LatLng(48.67029151791478, 6.173656270868103),
-        const LatLng(48.66668263296904, 6.167781150638174),
-        const LatLng(48.66466825506998, 6.174519819218139),
-        const LatLng(48.66836783548197, 6.1781724272606295),
-        const LatLng(48.67029151791478, 6.173656270868103),
-      ],
-    ),
-  ];
-
-  // This function is to be called when the geofence status is changed.
+  // Check zone entry / exit
   Future<void> _onPolyGeofenceStatusChanged(PolyGeofence polyGeofence,
       PolyGeofenceStatus polyGeofenceStatus, Location location) async {
-    //print('polyGeofence: ${polyGeofence.toJson()}');
-    print('polyGeofenceStatus: ${polyGeofenceStatus.toString()}');
-    _streamController.sink.add(polyGeofence);
+    String content;
+    String status =
+        polyGeofenceStatus.toString().replaceAll('PolyGeofenceStatus.', '');
+    if (status == "EXIT") {
+      //User exit zone (by default show main zone info)
+      content = "You're in the main Zone";
+    } else {
+      //User enter zone
+      content =
+          "Welcome to zone ${polyGeofence.data['name']} (${polyGeofence.data['description']})";
+    }
+    print(content);
   }
 
-  // This function is to be called when the location has changed.
-  void _onLocationChanged(Location location) {
-    print('location: ${location.toJson()}');
-  }
-
-  // This function is to be called when a location services status change occurs
-  // since the service was started.
-  void _onLocationServicesStatusChanged(bool status) {
-    print('isLocationServicesEnabled: $status');
-  }
-
-  // This function is used to handle errors that occur in the service.
+  //Handel geofence errors
   void _onError(error) {
     final errorCode = getErrorCodesFromError(error);
     if (errorCode == null) {
@@ -92,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
           pointsList.add(LatLng(item[1], item[0]));
         }
 
+        //Add to zone list (to use it in the detection)
         zonesList.add(
           PolyGeofence(
             id: zone.id.toString(),
@@ -108,9 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         _polyGeofenceService
             .addPolyGeofenceStatusChangeListener(_onPolyGeofenceStatusChanged);
-        _polyGeofenceService.addLocationChangeListener(_onLocationChanged);
-        _polyGeofenceService.addLocationServicesStatusChangeListener(
-            _onLocationServicesStatusChanged);
         _polyGeofenceService.addStreamErrorListener(_onError);
         _polyGeofenceService.start(zonesList).catchError(_onError);
       });
@@ -120,15 +96,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Column(
-            children: const <Widget>[
-               Card(
-                child: SizedBox(
-                  height: 250,
-                  child: MapWidget(),
-                ),
-          ),
-          Expanded(child:Markdown(
-            data: '''# Overview
+          children: const <Widget>[
+            Card(
+              child: SizedBox(
+                height: 250,
+                child: MapWidget(),
+              ),
+            ),
+            Expanded(
+              child: Markdown(
+                data: '''# Overview
 
 ### Philosophy
 
@@ -213,13 +190,12 @@ and code blocks:
 > 2.   This is the second list item.
 > 
 > Here''',
-            shrinkWrap: true,
-          ),
-          ),
-        ],
-      ),
-  );
-  
+                shrinkWrap: true,
+              ),
+            ),
+          ],
+        ),
+      );
 
   @override
   void dispose() {

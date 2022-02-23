@@ -14,17 +14,17 @@ late Future<int> idUpdate;
 late Object? getId;
 
 bool dbIsEmpty = false;
+int port = 62007;
 
 String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/items/terrain?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/terrain?access_token=public_mine_token';
 String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/items/zone?access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/zone?access_token=public_mine_token';
 String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:62090/revisions?sort=-id&limit=1&access_token=public_mine_token';
+    'http://docketu.iutnc.univ-lorraine.fr:${port}/revisions?sort=-id&limit=1&access_token=public_mine_token';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
-  print('fetch Main Zone');
   final response = await http.get(Uri.parse(uriMainZone));
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
@@ -90,9 +90,7 @@ Future<bool> fetchIdUpdate() async {
     //get ID from db local
     await handler.initializeDB();
     String getId = await handler.getLastIdUpdate();
-    print(getId.toString() + " " + idUpdate.toString());
     if (getId == null) {
-      print('getId is null');
     } else {
       if (getId != idUpdate) {
         res = true;
@@ -100,7 +98,6 @@ Future<bool> fetchIdUpdate() async {
         res = false;
       }
     }
-    print("result of update: " + res.toString());
     return res;
   } else {
     throw Exception('Failed to fetch ID');
@@ -137,8 +134,6 @@ initData() {
     handler.dbIsEmptyOrNot().then((dbCheck) async {
       //Check data version
       bool updateCheck = await fetchIdUpdate();
-      print(dbCheck);
-      print(updateCheck);
       if (dbCheck || updateCheck) {
         await handler.resetDb();
 
@@ -148,7 +143,7 @@ initData() {
         await fetchZones();
 
         //Update last change id
-        //insertId();
+        insertId();
       }
     });
   } catch (e) {
