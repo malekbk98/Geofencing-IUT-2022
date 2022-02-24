@@ -25,7 +25,7 @@ class _ZonesScreenState extends State<ZonesScreen> {
       //Get all zones from db
       zones = await handler.getZones();
       setState(() {});
-      print(zones);
+      // print(zones);
 
       // for (var zone in temp) {
       //   late List<LatLng> pointsList = [];

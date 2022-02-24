@@ -18,7 +18,7 @@ class DatabaseHandler {
       onCreate: (database, version) async {
         //Create zones table
         await database.execute(
-          'CREATE TABLE zones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
+          'CREATE TABLE zones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON, image_header TEXT)',
         );
 
         //Create mainZones table
@@ -69,6 +69,7 @@ class DatabaseHandler {
         'type': zone.type,
         'description': zone.description,
         'coordonnees': jsonEncode(zone.coordonnees),
+        'image_header': zone.image_header,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );

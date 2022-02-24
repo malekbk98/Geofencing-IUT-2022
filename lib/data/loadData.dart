@@ -60,13 +60,13 @@ Future<List<Zone>> fetchZones() async {
     List<Zone> tempZones = [];
     for (var zone in data) {
       var temp = Zone(
-        id: zone['id'],
-        status: zone['status'],
-        nom: zone['nom'],
-        type: "zone",
-        description: zone['description'],
-        coordonnees: zone['coordonnees']['coordinates'][0],
-      );
+          id: zone['id'],
+          status: zone['status'],
+          nom: zone['nom'],
+          type: "zone",
+          description: zone['description'],
+          coordonnees: zone['coordonnees']['coordinates'][0],
+          image_header: zone['image_header']);
 
       //Add to return
       tempZones.add(temp);
