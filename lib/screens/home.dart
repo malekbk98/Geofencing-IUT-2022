@@ -52,8 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
       res = polyGeofence.data['content'];
     }
 
-
-    NotificationService().showNotification(Random().nextInt(99999), polyGeofence.data['name'], polyGeofence.data['description']);
+    // Getting notified after entering orgoing out of a zone
+    NotificationService().showNotification(Random().nextInt(9999999999999), polyGeofence.data['name'], polyGeofence.data['description']);
 
     //Update state
     setState(() {
