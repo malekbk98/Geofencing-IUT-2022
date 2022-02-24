@@ -25,7 +25,7 @@ class _ZonesScreenState extends State<ZonesScreen> {
       //Get all zones from db
       zones = await handler.getZones();
       setState(() {});
-      // print(zones);
+      print(zones);
 
       // for (var zone in temp) {
       //   late List<LatLng> pointsList = [];
@@ -54,7 +54,7 @@ class _ZonesScreenState extends State<ZonesScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: zones
-                  .map((zone) => ZoneCard(zone.nom,
+                  .map((zone) => ZoneCard(zone.image_header,
                       NetworkImage('https://placeimg.com/640/480/any')))
                   .toList(),
 
