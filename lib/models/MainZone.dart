@@ -5,25 +5,23 @@ class MainZone {
   final int id;
   final String status;
   final String nom;
-  final String type;
   final String description;
   final List coordonnees;
 
 //Constructor
-  const MainZone(
-      {required this.id,
-      required this.status,
-      required this.nom,
-      required this.type,
-      required this.description,
-      required this.coordonnees});
+  const MainZone({
+    required this.id,
+    required this.status,
+    required this.nom,
+    required this.description,
+    required this.coordonnees,
+  });
 
   //From Json
   factory MainZone.fromJson(Map<String, dynamic> json) {
     return MainZone(
       id: json['id'],
       status: json['status'],
-      type: json['type'],
       nom: json['nom'],
       description: json['description'],
       coordonnees: json['coordonnees'],
@@ -34,7 +32,6 @@ class MainZone {
       : id = res["id"],
         status = res['status'],
         nom = res['nom'],
-        type = res['type'],
         description = res['description'],
         coordonnees = jsonDecode(res['coordonnees']);
 
@@ -43,7 +40,6 @@ class MainZone {
       'id': id,
       'status': status,
       'nom': nom,
-      'type': type,
       'description': description,
       'coordonnees': coordonnees
     };
@@ -52,6 +48,6 @@ class MainZone {
   //To string
   @override
   String toString() {
-    return 'MainZone{id: $id, name: $nom, status: $status, type: $type, description: $description, coordonnees: $coordonnees}';
+    return 'MainZone{id: $id, name: $nom, status: $status, description: $description, coordonnees: $coordonnees}';
   }
 }

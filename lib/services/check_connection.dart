@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:geofencing/errors/error_handler.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 final Connectivity _connectivity = Connectivity();
@@ -9,12 +9,13 @@ class CheckConnection {
   //Check internet connection
   static bool initializeCheck() {
     bool _isOnline = false;
+    late String connectionType;
 
     subscription =
         _connectivity.onConnectivityChanged.listen((ConnectivityResult res) {
-      print(res.name);
-      if (res.name == "wifi" || res.name == "mobile") {
-        _isOnline = true;
+      connectionType = res.name;
+      if (connectionType == 'none') {
+        throw ErrorHandler('There is no internet connection');
       }
     });
 
