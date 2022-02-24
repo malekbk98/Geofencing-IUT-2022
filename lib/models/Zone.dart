@@ -4,25 +4,26 @@ class Zone {
   final int id;
   final String status;
   final String nom;
-  final String type;
+  final int mainZoneId;
   final String description;
   final List coordonnees;
 
 //Constructor
-  const Zone(
-      {required this.id,
-      required this.status,
-      required this.nom,
-      required this.type,
-      required this.description,
-      required this.coordonnees});
+  const Zone({
+    required this.id,
+    required this.status,
+    required this.nom,
+    required this.mainZoneId,
+    required this.description,
+    required this.coordonnees,
+  });
 
   //From Json
   factory Zone.fromJson(Map<String, dynamic> json) {
     return Zone(
       id: json['id'],
       status: json['status'],
-      type: json['type'],
+      mainZoneId: json['mainZoneId'],
       nom: json['nom'],
       description: json['description'],
       coordonnees: json['coordonnees'],
@@ -33,7 +34,7 @@ class Zone {
       : id = res["id"],
         status = res['status'],
         nom = res['nom'],
-        type = res['type'],
+        mainZoneId = res['mainZoneId'],
         description = res['description'],
         coordonnees = jsonDecode(res['coordonnees']);
 
@@ -42,7 +43,7 @@ class Zone {
       'id': id,
       'status': status,
       'nom': nom,
-      'type': type,
+      'mainZoneId': mainZoneId,
       'description': description,
       'coordonnees': coordonnees
     };
@@ -51,6 +52,6 @@ class Zone {
   //To string
   @override
   String toString() {
-    return 'Zone{id: $id, name: $nom, status: $status, type: $type, description: $description, coordonnees: $coordonnees}';
+    return 'Zone{id: $id, name: $nom, status: $status, mainZoneId: $mainZoneId, description: $description, coordonnees: $coordonnees}';
   }
 }

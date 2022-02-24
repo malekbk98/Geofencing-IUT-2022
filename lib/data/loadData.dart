@@ -16,15 +16,13 @@ late Object? getId;
 
 bool dbIsEmpty = false;
 int port = 62007;
+String token = "access_token=public_mine_token";
+String apiUri = "http://docketu.iutnc.univ-lorraine.fr";
 
-String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/terrain?access_token=public_mine_token';
-String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/zone?access_token=public_mine_token';
-String uriArticles =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/article?access_token=public_mine_token';
-String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/revisions?sort=-id&limit=1&access_token=public_mine_token';
+String uriMainZone = '${apiUri}:${port}/items/terrain?${token}';
+String uriZones = '${apiUri}:${port}/items/zone?${token}';
+String uriArticles = '${apiUri}:${port}/items/article?${token}';
+String checkIdUpdate = '${apiUri}:${port}/revisions?sort=-id&limit=1&${token}';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
@@ -36,7 +34,6 @@ Future<MainZone> fetchMainZone() async {
       id: data['id'],
       status: data['status'],
       nom: data['nom'],
-      type: "mainZone",
       description: data['description'],
       coordonnees: data['coordonnees']['coordinates'][0],
     );
@@ -63,7 +60,7 @@ Future<List<Zone>> fetchZones() async {
         id: zone['id'],
         status: zone['status'],
         nom: zone['nom'],
-        type: "zone",
+        mainZoneId: zone['terrain'],
         description: zone['description'],
         coordonnees: zone['coordonnees']['coordinates'][0],
       );
@@ -88,25 +85,27 @@ Future<List<Article>> fetchArticles() async {
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var data = jsonDecode(response.body)['data'];
+
+    //Init db
+    await handler.initializeDB();
+
     List<Article> articles = [];
     for (var art in data) {
       if (art['status'] == 'published') {
         var article = Article(
           id: art['id'],
           title: art['titre'],
-          author: art['auteur'],
           content: art['contenu'],
           img: art['image_header'],
           spotId: art['borne'],
           zoneId: art['zone'],
+          mainZoneId: art['terrain'],
         );
-
         //Add to return
         articles.add(article);
+
         //Add to db
-        handler.initializeDB().whenComplete(() async {
-          handler.insertArticle(article);
-        });
+        handler.insertArticle(article);
       }
     }
     return articles;
@@ -162,12 +161,12 @@ initData() async {
      * Load from APIs
      */
     handler = DatabaseHandler();
-
     //Check db status (empty/not)
     bool dbCheck = await handler.dbIsEmptyOrNot();
 
     //Check data version
     bool updateCheck = await fetchIdUpdate();
+
     if (dbCheck || updateCheck) {
       await handler.resetDb();
 
