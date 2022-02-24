@@ -26,20 +26,8 @@ class _ZonesScreenState extends State<ZonesScreen> {
     handler.initializeDB().whenComplete(() async {
       //Get all zones from db
       zones = await handler.getZones();
-      setState(() {});
-      print(zones);
-
       String uriAssets = getUriAssets();
-
-      // for (var zone in temp) {
-      //   late List<LatLng> pointsList = [];
-      //   for (var item in zone.coordonnees) {
-      //     pointsList.add(LatLng(item[1], item[0]));
-      //   }
-
-      //   //Update state
-      // setState(() {});
-      // }
+      setState(() {});
     });
   }
 
@@ -56,26 +44,10 @@ class _ZonesScreenState extends State<ZonesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
               children: zones
                   .map((zone) => ZoneCard(zone.nom,
                       NetworkImage('${uriAssets}/${zone.image_header}')))
                   .toList(),
-
-              // children: const <Widget>[
-              //   ZoneCard(
-              //       'Zone', NetworkImage('https://placeimg.com/640/480/any')),
-              //   ZoneCard(
-              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-              //   ZoneCard(
-              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-              //   ZoneCard(
-              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-              //   ZoneCard(
-              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-              //   ZoneCard(
-              //       'Zone1', NetworkImage('https://placeimg.com/640/480/any')),
-              // ],
             ),
           ),
         ),
