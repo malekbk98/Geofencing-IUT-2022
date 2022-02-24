@@ -50,16 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: FutureBuilder(
-          //future: zones,
+          future: initData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (1 == 2) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return const HomeScreen();
-        }
-      }),
+            if (snapshot.data == null) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return const HomeScreen();
+            }
+          }),
       floatingActionButton: FloatingActionButton(
           backgroundColor: AppTheme.mainColor,
           child: const Icon(Icons.qr_code),

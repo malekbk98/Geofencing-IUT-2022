@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late DatabaseHandler handler;
   late List<PolyGeofence> zonesList = [];
   String content = "";
+  String mainZoneContent = "";
 
   // Create a [PolyGeofenceService] instance and set options.
   final _polyGeofenceService = PolyGeofenceService.instance.setup(
@@ -36,16 +37,19 @@ class _HomeScreenState extends State<HomeScreen> {
   // Check zone entry / exit
   Future<void> _onPolyGeofenceStatusChanged(PolyGeofence polyGeofence,
       PolyGeofenceStatus polyGeofenceStatus, Location location) async {
-    String msg;
     String status =
         polyGeofenceStatus.toString().replaceAll('PolyGeofenceStatus.', '');
+    String res = "";
     if (status == "EXIT") {
-      //User exit zone (by default show main zone info)
-      msg = "You're in the main Zone";
+      //print("You're in the main Zone"); //Just for testing
+      //Return default info (main zone info)
+      res = mainZoneContent;
     } else {
       //User enter zone
-      msg =
-          "Welcome to zone ${polyGeofence.data['name']} (${polyGeofence.data['description']})";
+      //print("Welcome to zone ${polyGeofence.data['name']} (${polyGeofence.data['description']})"); //Just for testing (print this in order to check current zone)
+
+      //Return current zone info
+      res = polyGeofence.data['content'];
     }
 
 
@@ -53,10 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //Update state
     setState(() {
-      content = polyGeofence.data['content'];
+      content = res;
     });
-
-    print(msg);
   }
 
   //Handel geofence errors
@@ -80,18 +82,27 @@ class _HomeScreenState extends State<HomeScreen> {
     handler = DatabaseHandler();
     handler.initializeDB().whenComplete(() async {
       //Get all zones from db
-      var temp = await handler.getZones();
-      for (var zone in temp) {
+      var zones = await handler.getZones();
+
+      //Main zone id (get this from zones)
+      int mainZoneId = -1;
+
+      for (var zone in zones) {
         late List<LatLng> pointsList = [];
         for (var item in zone.coordonnees) {
           pointsList.add(LatLng(item[1], item[0]));
         }
 
         //Concatenate all article togethers
-        var articles = await handler.getArticle(zone.id);
+        var articles = await handler.getZoneArticles(zone.id);
         var article = "";
         for (var a in articles) {
           article = article + a.content;
+        }
+
+        //Get mainZone id from zone
+        if (mainZoneId == -1) {
+          mainZoneId = zone.mainZoneId;
         }
 
         //Add to zone list (to use it in the detection)
@@ -109,6 +120,15 @@ class _HomeScreenState extends State<HomeScreen> {
         //Update state
         setState(() {});
       }
+
+      //Get mainZone details (default display)
+      mainZoneContent = await handler.getMainZoneArticle(mainZoneId);
+
+      //Update state
+      setState(() {
+        content = mainZoneContent;
+      });
+
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         _polyGeofenceService
             .addPolyGeofenceStatusChangeListener(_onPolyGeofenceStatusChanged);

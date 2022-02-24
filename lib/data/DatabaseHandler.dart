@@ -18,12 +18,12 @@ class DatabaseHandler {
       onCreate: (database, version) async {
         //Create zones table
         await database.execute(
-          'CREATE TABLE zones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
+          'CREATE TABLE zones(id INTEGER PRIMARY KEY, nom TEXT, mainZoneId INTEGER,status TEXT, description TEXT, coordonnees JSON, image_header TEXT)',
         );
 
         //Create mainZones table
         await database.execute(
-          'CREATE TABLE mainZones(id INTEGER PRIMARY KEY, nom TEXT, type TEXT,status TEXT, description TEXT, coordonnees JSON)',
+          'CREATE TABLE mainZones(id INTEGER PRIMARY KEY, nom TEXT, status TEXT, description TEXT, coordonnees JSON)',
         );
 
         //Create idUpdate table
@@ -39,7 +39,7 @@ class DatabaseHandler {
         //Create Articles table
         //Create mainZones table
         await database.execute(
-          'CREATE TABLE articles(id INTEGER PRIMARY KEY, title TEXT, author TEXT,content TEXT, img TEXT, spotId INTEGER DEFAULT NULL , zoneId INTEGER DEFAULT NULL )',
+          'CREATE TABLE articles(id INTEGER PRIMARY KEY, title TEXT, author TEXT,content TEXT, img TEXT, spotId INTEGER DEFAULT NULL, zoneId INTEGER DEFAULT NULL, mainZoneId INTEGER DEFAULT NULL )',
         );
       },
       version: 1,
@@ -66,9 +66,10 @@ class DatabaseHandler {
         'id': zone.id,
         'nom': zone.nom,
         'status': zone.status,
-        'type': zone.type,
+        'mainZoneId': zone.mainZoneId,
         'description': zone.description,
         'coordonnees': jsonEncode(zone.coordonnees),
+        'image_header': zone.image_header,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -87,7 +88,6 @@ class DatabaseHandler {
         'id': zone.id,
         'nom': zone.nom,
         'status': zone.status,
-        'type': zone.type,
         'description': zone.description,
         'coordonnees': jsonEncode(zone.coordonnees),
       },
@@ -108,11 +108,11 @@ class DatabaseHandler {
       {
         'id': article.id,
         'title': article.title,
-        'author': article.author,
         'content': article.content,
         'img': article.img,
         'spotId': article.spotId,
         'zoneId': article.zoneId,
+        'mainZoneId': article.mainZoneId,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -166,11 +166,19 @@ class DatabaseHandler {
     return queryResult.isEmpty;
   }
 
-  //Get article by id
-  Future<List<Article>> getArticle(int id) async {
+  //Get article by zone id
+  Future<List<Article>> getZoneArticles(int id) async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> result =
         await db.rawQuery('SELECT * FROM articles WHERE zoneId=?', [id]);
     return result.map((e) => Article.fromMap(e)).toList();
+  }
+
+  //Get article by mainZone id
+  Future<String> getMainZoneArticle(int id) async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> result =
+        await db.rawQuery('SELECT * FROM articles WHERE mainZoneId=?', [id]);
+    return result[0]['content'].toString();
   }
 }

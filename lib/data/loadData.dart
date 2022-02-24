@@ -16,15 +16,15 @@ late Object? getId;
 
 bool dbIsEmpty = false;
 int port = 62007;
+String token = "access_token=public_mine_token";
+String apiUri = "http://docketu.iutnc.univ-lorraine.fr";
 
-String uriMainZone =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/terrain?access_token=public_mine_token';
-String uriZones =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/zone?access_token=public_mine_token';
-String uriArticles =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/items/article?access_token=public_mine_token';
-String checkIdUpdate =
-    'http://docketu.iutnc.univ-lorraine.fr:${port}/revisions?sort=-id&limit=1&access_token=public_mine_token';
+String uriAssets = '$apiUri:$port/assets';
+
+String uriMainZone = '${apiUri}:${port}/items/terrain?${token}';
+String uriZones = '${apiUri}:${port}/items/zone?${token}';
+String uriArticles = '${apiUri}:${port}/items/article?${token}';
+String checkIdUpdate = '${apiUri}:${port}/revisions?sort=-id&limit=1&${token}';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {
@@ -36,7 +36,6 @@ Future<MainZone> fetchMainZone() async {
       id: data['id'],
       status: data['status'],
       nom: data['nom'],
-      type: "mainZone",
       description: data['description'],
       coordonnees: data['coordonnees']['coordinates'][0],
     );
@@ -60,13 +59,13 @@ Future<List<Zone>> fetchZones() async {
     List<Zone> tempZones = [];
     for (var zone in data) {
       var temp = Zone(
-        id: zone['id'],
-        status: zone['status'],
-        nom: zone['nom'],
-        type: "zone",
-        description: zone['description'],
-        coordonnees: zone['coordonnees']['coordinates'][0],
-      );
+          id: zone['id'],
+          status: zone['status'],
+          nom: zone['nom'],
+          mainZoneId: zone['terrain'],
+          description: zone['description'],
+          coordonnees: zone['coordonnees']['coordinates'][0],
+          image_header: zone['image_header']);
 
       //Add to return
       tempZones.add(temp);
@@ -88,25 +87,27 @@ Future<List<Article>> fetchArticles() async {
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var data = jsonDecode(response.body)['data'];
+
+    //Init db
+    await handler.initializeDB();
+
     List<Article> articles = [];
     for (var art in data) {
       if (art['status'] == 'published') {
         var article = Article(
           id: art['id'],
           title: art['titre'],
-          author: art['auteur'],
           content: art['contenu'],
           img: art['image_header'],
           spotId: art['borne'],
           zoneId: art['zone'],
+          mainZoneId: art['terrain'],
         );
-
         //Add to return
         articles.add(article);
+
         //Add to db
-        handler.initializeDB().whenComplete(() async {
-          handler.insertArticle(article);
-        });
+        handler.insertArticle(article);
       }
     }
     return articles;
@@ -155,34 +156,39 @@ Future insertId() async {
   }
 }
 
-initData() {
+String getUriAssets() => uriAssets;
+
+initData() async {
   try {
     /**
      * Load from APIs
      */
     handler = DatabaseHandler();
     //Check db status (empty/not)
-    handler.dbIsEmptyOrNot().then((dbCheck) async {
-      //Check data version
-      bool updateCheck = await fetchIdUpdate();
-      if (dbCheck || updateCheck) {
-        await handler.resetDb();
+    bool dbCheck = await handler.dbIsEmptyOrNot();
 
-        //Load main zone
-        await fetchMainZone();
+    //Check data version
+    bool updateCheck = await fetchIdUpdate();
 
-        //Load all zones
-        await fetchZones();
+    if (dbCheck || updateCheck) {
+      await handler.resetDb();
 
-        //Load all articles
-        await fetchArticles();
+      //Load main zone
+      await fetchMainZone();
 
-        //Update last change id
-        insertId();
-      }
-    });
+      //Load all zones
+      await fetchZones();
 
-    //Check db status (empty/not)
+      //Load all articles
+      await fetchArticles();
+
+      //Update last change id
+      await insertId();
+
+      return true;
+    } else {
+      return true;
+    }
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());
