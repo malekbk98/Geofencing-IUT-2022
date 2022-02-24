@@ -19,6 +19,8 @@ int port = 62007;
 String token = "access_token=public_mine_token";
 String apiUri = "http://docketu.iutnc.univ-lorraine.fr";
 
+String uriAssets = '$apiUri:$port/assets';
+
 String uriMainZone = '${apiUri}:${port}/items/terrain?${token}';
 String uriZones = '${apiUri}:${port}/items/zone?${token}';
 String uriArticles = '${apiUri}:${port}/items/article?${token}';
@@ -153,6 +155,8 @@ Future insertId() async {
     throw Exception('Failed to insert ID');
   }
 }
+
+String getUriAssets() => uriAssets;
 
 initData() async {
   try {

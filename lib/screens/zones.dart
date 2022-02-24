@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geofencing/widgets/zone_card.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
+import 'package:geofencing/data/loadData.dart';
+
 import '../data/DatabaseHandler.dart';
 import '../models/Zone.dart';
 
@@ -26,6 +28,8 @@ class _ZonesScreenState extends State<ZonesScreen> {
       zones = await handler.getZones();
       setState(() {});
       print(zones);
+
+      String uriAssets = getUriAssets();
 
       // for (var zone in temp) {
       //   late List<LatLng> pointsList = [];
@@ -54,8 +58,8 @@ class _ZonesScreenState extends State<ZonesScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: zones
-                  .map((zone) => ZoneCard(zone.image_header,
-                      NetworkImage('https://placeimg.com/640/480/any')))
+                  .map((zone) => ZoneCard(zone.nom,
+                      NetworkImage('${uriAssets}/${zone.image_header}')))
                   .toList(),
 
               // children: const <Widget>[
