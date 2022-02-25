@@ -46,17 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
       //Return current zone info
       res = polyGeofence.data['content'];
-    }
 
-    // Getting notified after entering orgoing out of a zone
-    UserPreferences()
-        .getNotificationsPreferences('notifications')
-        .then((value) {
-      if (value!) {
-        NotificationService().showNotification(Random().nextInt(99999),
-            polyGeofence.data['name'], polyGeofence.data['description']);
-      }
-    });
+      // Getting notified after entering orgoing out of a zone
+      UserPreferences()
+          .getNotificationsPreferences('notifications')
+          .then((value) {
+        if (value!) {
+          NotificationService().showNotification(Random().nextInt(99999),
+              polyGeofence.data['name'], polyGeofence.data['description']);
+        }
+      });
+    }
 
     //Update state
     setState(() {
