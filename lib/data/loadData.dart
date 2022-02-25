@@ -6,6 +6,7 @@ import 'package:geofencing/models/Zone.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/MainZone.dart';
+import '../services/check_connection.dart';
 
 late Future<List<Zone>> zones;
 late Future<MainZone> mainZone;
@@ -135,6 +136,7 @@ Future<bool> fetchIdUpdate() async {
     }
     return res;
   } else {
+    return false;
     throw Exception('Failed to fetch ID');
   }
 }
@@ -154,19 +156,27 @@ Future insertId() async {
   }
 }
 
+//Load from APIs
 initData() async {
+  late bool updateCheck;
   try {
-    /**
-     * Load from APIs
-     */
     handler = DatabaseHandler();
     //Check db status (empty/not)
     bool dbCheck = await handler.dbIsEmptyOrNot();
 
     //Check data version
-    bool updateCheck = await fetchIdUpdate();
+    bool cnxCheck = await CheckConnection.initializeCheck();
+
+    if (cnxCheck == true) {
+      updateCheck = await fetchIdUpdate();
+      dbCheck = false;
+    } else {
+      updateCheck = false;
+      dbCheck = false;
+    }
 
     if (dbCheck || updateCheck) {
+      //Dump all tables
       await handler.resetDb();
 
       //Load main zone
@@ -180,11 +190,9 @@ initData() async {
 
       //Update last change id
       await insertId();
-
-      return true;
-    } else {
-      return true;
     }
+
+    return true;
   } catch (e) {
     // ignore: avoid_print
     print(e.toString());

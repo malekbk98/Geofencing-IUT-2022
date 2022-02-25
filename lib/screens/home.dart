@@ -71,9 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    //call for check connection state (wifi | mobile | none)
-    bool isOnline = CheckConnection.initializeCheck();
-
     handler = DatabaseHandler();
     handler.initializeDB().whenComplete(() async {
       //Get all zones from db
