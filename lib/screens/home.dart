@@ -6,9 +6,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:geofencing/widgets/map.dart';
 import 'package:poly_geofence_service/poly_geofence_service.dart';
 import 'package:geofencing/services/user_preferences.dart';
-
-import 'package:geofencing/services/check_connection.dart';
-
 import '../data/DatabaseHandler.dart';
 import '../services/notification_service.dart';
 
@@ -42,12 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
         polyGeofenceStatus.toString().replaceAll('PolyGeofenceStatus.', '');
     String res = "";
     if (status == "EXIT") {
-      //print("You're in the main Zone"); //Just for testing
       //Return default info (main zone info)
       res = mainZoneContent;
     } else {
       //User enter zone
-      //print("Welcome to zone ${polyGeofence.data['name']} (${polyGeofence.data['description']})"); //Just for testing (print this in order to check current zone)
 
       //Return current zone info
       res = polyGeofence.data['content'];
