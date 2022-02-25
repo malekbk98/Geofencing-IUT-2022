@@ -21,6 +21,8 @@ int port = 62090;
 String token = "access_token=public_mine_token";
 String apiUri = "http://docketu.iutnc.univ-lorraine.fr";
 
+String uriAssets = '$apiUri:$port/assets';
+
 String uriMainZone = '${apiUri}:${port}/items/terrain?${token}';
 String uriZones = '${apiUri}:${port}/items/zone?${token}';
 String uriArticles = '${apiUri}:${port}/items/article?${token}';
@@ -171,7 +173,6 @@ Future<bool> fetchIdUpdate() async {
     return res;
   } else {
     return false;
-    throw Exception('Failed to fetch ID');
   }
 }
 
