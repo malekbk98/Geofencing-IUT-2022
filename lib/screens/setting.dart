@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 import 'package:geofencing/theme/app_theme.dart';
-
+import 'package:geofencing/services/user_preferences.dart';
 import 'package:geofencing/data/loadData.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -12,7 +12,21 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  bool _notifications = false;
+  late bool _notifications = true;
+
+  @override
+  void initState() {
+    super.initState();
+    //get the notification preference, then
+    UserPreferences()
+        .getNotificationsPreferences('notifications')
+        .then((value) {
+      //Change state
+      setState(() {
+        _notifications = value!;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -43,6 +57,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   value: _notifications,
                   onChanged: (value) {
                     setState(() {
+                      UserPreferences().setNotificationsPreferences(value);
                       _notifications = value;
                     });
                   },
