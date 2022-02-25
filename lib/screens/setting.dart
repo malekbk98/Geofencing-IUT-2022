@@ -4,6 +4,7 @@ import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/services/user_preferences.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:vibration/vibration.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -14,10 +15,20 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   late bool _notifications = true;
+  late String dateUpdate;
 
   @override
   void initState() {
     super.initState();
+
+    handler.initializeDB().whenComplete(() async {
+      await handler.getDateTimeOfLastIdUpdate().then((value) {
+        setState(() {
+          dateUpdate = value;
+        });
+      });
+    });
+
     //get the notification preference, then
     UserPreferences()
         .getNotificationsPreferences('notifications')
@@ -88,7 +99,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       style:
                           ElevatedButton.styleFrom(primary: AppTheme.mainColor),
                     ),
-                    const Text('Dernière date de mises à jour : DD-MM-YYYY')
+                    Text('Dernière date de mises à jour le $dateUpdate'),
                   ],
                 ),
               ],
