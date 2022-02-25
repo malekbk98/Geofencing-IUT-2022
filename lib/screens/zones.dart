@@ -26,7 +26,6 @@ class _ZonesScreenState extends State<ZonesScreen> {
     handler.initializeDB().whenComplete(() async {
       //Get all zones from db
       zones = await handler.getZones();
-      String uriAssets = getUriAssets();
       setState(() {});
     });
   }
