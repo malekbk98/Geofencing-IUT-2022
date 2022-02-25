@@ -1,24 +1,18 @@
 import 'dart:async';
-import 'package:geofencing/errors/error_handler.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-
-final Connectivity _connectivity = Connectivity();
-late StreamSubscription<ConnectivityResult> subscription;
+import 'dart:io';
 
 class CheckConnection {
   //Check internet connection
-  static bool initializeCheck() {
-    bool _isOnline = false;
-    late String connectionType;
-
-    subscription =
-        _connectivity.onConnectivityChanged.listen((ConnectivityResult res) {
-      connectionType = res.name;
-      if (connectionType == 'none') {
-        throw ErrorHandler('There is no internet connection');
+  static Future<bool> initializeCheck() async {
+    try {
+      final result =
+          await InternetAddress.lookup('docketu.iutnc.univ-lorraine.fr');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
       }
-    });
-
-    return _isOnline;
+      return false;
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 }

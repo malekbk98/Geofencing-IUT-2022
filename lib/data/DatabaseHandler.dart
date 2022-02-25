@@ -6,6 +6,7 @@ import 'package:geofencing/models/Zone.dart';
 
 import '../models/Article.dart';
 import '../models/MainZone.dart';
+import '../models/Spot.dart';
 
 late List<Zone> zones;
 
@@ -37,9 +38,13 @@ class DatabaseHandler {
         );
 
         //Create Articles table
-        //Create mainZones table
         await database.execute(
           'CREATE TABLE articles(id INTEGER PRIMARY KEY, title TEXT, author TEXT,content TEXT, img TEXT, spotId INTEGER DEFAULT NULL, zoneId INTEGER DEFAULT NULL, mainZoneId INTEGER DEFAULT NULL )',
+        );
+
+        //Create Spots table
+        await database.execute(
+          'CREATE TABLE spots(id INTEGER PRIMARY KEY, name TEXT,description TEXT, mainZoneId INTEGER)',
         );
       },
       version: 1,
@@ -53,6 +58,7 @@ class DatabaseHandler {
     result = await db.rawDelete('DELETE FROM mainZones');
     result = await db.rawDelete('DELETE FROM zones');
     result = await db.rawDelete('DELETE FROM articles');
+    result = await db.rawDelete('DELETE FROM spots');
     return result;
   }
 
@@ -73,6 +79,25 @@ class DatabaseHandler {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    return result;
+  }
+
+  // Insert a spot
+  Future<int> insertSpot(Spot spot) async {
+    int result = 0;
+    final Database db = await initializeDB();
+    result = await db.insert(
+      'spots',
+      {
+        'id': spot.id,
+        'name': spot.name,
+        'description': spot.description,
+        'mainZoneId': spot.mainZoneId,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print(spot);
 
     return result;
   }
@@ -180,5 +205,13 @@ class DatabaseHandler {
     final List<Map<String, Object?>> result =
         await db.rawQuery('SELECT * FROM articles WHERE mainZoneId=?', [id]);
     return result[0]['content'].toString();
+  }
+
+  //Get all spots
+  Future<List<Spot>> getSpots() async {
+    // Get a reference to the database.
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> queryResult = await db.query('spots');
+    return queryResult.map((e) => Spot.fromMap(e)).toList();
   }
 }

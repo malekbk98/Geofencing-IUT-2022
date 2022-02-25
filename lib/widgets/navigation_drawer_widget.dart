@@ -4,7 +4,7 @@ import 'package:geofencing/screens/spots.dart';
 import 'package:geofencing/screens/zones.dart';
 import 'package:geofencing/theme/app_theme.dart';
 
-import '../main.dart';
+import '../MyHomePage.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   final padding = const EdgeInsets.symmetric(horizontal: 10);
