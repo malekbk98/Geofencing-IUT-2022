@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
+import 'package:geofencing/data/loadData.dart';
+import 'package:geofencing/models/Spot.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 class SpotPage extends StatelessWidget {
-  const SpotPage({Key? key}) : super(key: key);
-
+  String id;
+  late Spot spot;
+  late String md;
+  
+  SpotPage(this.id, {Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -15,7 +21,7 @@ class SpotPage extends StatelessWidget {
         ),
         body: 
         FutureBuilder(
-          future: getTextData(),
+          future: getSpotData(),
           builder: (context, snapshot){
             if(snapshot.hasData){
               return SingleChildScrollView(
@@ -26,7 +32,7 @@ class SpotPage extends StatelessWidget {
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         child: Image.network(
-                          'https://placeimg.com/640/480/any',
+                          '${uriAssets}/${spot.image_header}',
                           fit: BoxFit.fill,
                         ),
                         shape: RoundedRectangleBorder(
@@ -37,7 +43,7 @@ class SpotPage extends StatelessWidget {
                       ),
                       Markdown(
                         physics: const NeverScrollableScrollPhysics(),
-                        data: snapshot.data.toString(),
+                        data: spot.description,
                         shrinkWrap: true,
                       )
                     ],
@@ -49,49 +55,15 @@ class SpotPage extends StatelessWidget {
         ),
       );
 
-  Future<String> getTextData() async{
-    return '''
-## Overview
+  Future<Spot> getSpotData() async{
+    spot = await DatabaseHandler().getSpot(id);
 
-### Philosophy
+    var articles = await handler.getZoneArticles(spot.id);
+        
+    for (var a in articles) {
+      md += a.content;
+    }
 
-Markdown is intended to be as easy-to-read and easy-to-write as is feasible.
-
-Readability, however, is emphasized above all else. A Markdown-formatted
-document should be publishable as-is, as plain text, without looking
-like it's been marked up with tags or formatting instructions. While
-Markdown's syntax has been influenced by several existing text-to-HTML
-filters -- including [Setext](http://docutils.sourceforge.net/mirror/setext.html), [atx](http://www.aaronsw.com/2002/atx/), [Textile](http://textism.com/tools/textile/), [reStructuredText](http://docutils.sourceforge.net/rst.html),
-[Grutatext](http://www.triptico.com/software/grutatxt.html), and [EtText](http://ettext.taint.org/doc/) -- the single biggest source of
-inspiration for Markdown's syntax is the format of plain text email.
-
-## Block Elements
-
-### Paragraphs and Line Breaks
-
-A paragraph is simply one or more consecutive lines of text, separated
-by one or more blank lines. (A blank line is any line that looks like a
-blank line -- a line containing nothing but spaces or tabs is considered
-blank.) Normal paragraphs should not be indented with spaces or tabs.
-
-The implication of the "one or more consecutive lines of text" rule is
-that Markdown supports "hard-wrapped" text paragraphs. This differs
-significantly from most other text-to-HTML formatters (including Movable
-Type's "Convert Line Breaks" option) which translate every line break
-character in a paragraph into a `<br />` tag.
-
-When you *do* want to insert a `<br />` break tag using Markdown, you
-end a line with two or more spaces, then type return.
-
-### Headers
-
-Markdown supports two styles of headers, [Setext] [1] and [atx] [2].
-
-Optionally, you may "close" atx-style headers. This is purely
-cosmetic -- you can use this if you think it looks better. The
-closing hashes don't even need to match the number of hashes
-used to open the header. (The number of opening hashes
-determines the header level.)
-''';
+    return spot;
   }
 }

@@ -82,7 +82,7 @@ class _QrServiceState extends State<QrService> {
   void checkScanResult(String code) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => SpotPage(/*code*/)),
+      MaterialPageRoute(builder: (context) => SpotPage(code)),
     );
   }
 }
