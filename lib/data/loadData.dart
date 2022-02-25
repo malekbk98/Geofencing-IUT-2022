@@ -131,11 +131,13 @@ Future<List<Spot>> fetchSpots() async {
 
     List<Spot> spots = [];
     for (var s in data) {
+      print(s);
       if (s['status'] == 'published') {
         var spot = Spot(
           id: s['id'],
           name: s['nom'],
           description: s['description'],
+          image_header: s['image_header'],
           mainZoneId: s['terrain'],
         );
         //Add to return

@@ -4,6 +4,7 @@ class Spot {
   final int id;
   final String name;
   final String description;
+  final String image_header;
   final int? mainZoneId;
 
 //Constructor
@@ -11,6 +12,7 @@ class Spot {
     required this.id,
     required this.name,
     required this.description,
+    required this.image_header,
     required this.mainZoneId,
   });
 
@@ -20,6 +22,7 @@ class Spot {
       id: json['id'],
       name: json['name'],
       description: json['description'],
+      image_header: json['image_header'],
       mainZoneId: json['mainZoneId'],
     );
   }
@@ -28,6 +31,7 @@ class Spot {
       : id = res["id"],
         name = res['name'],
         description = res['description'],
+        image_header = res['image_header'],
         mainZoneId = res['mainZoneId'];
 
   Map<String, Object?> toMap() {
@@ -35,6 +39,7 @@ class Spot {
       'id': id,
       'name': name,
       'description': description,
+      'image_header': image_header,
       'mainZoneId': mainZoneId,
     };
   }
@@ -42,6 +47,6 @@ class Spot {
   //To string
   @override
   String toString() {
-    return 'Spot{id: $id, name: $name, description: $description, mainZoneId: $mainZoneId}';
+    return 'Spot{id: $id, name: $name, description: $description, image_header: $image_header, mainZoneId: $mainZoneId}';
   }
 }

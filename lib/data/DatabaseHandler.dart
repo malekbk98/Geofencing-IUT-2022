@@ -44,7 +44,7 @@ class DatabaseHandler {
 
         //Create Spots table
         await database.execute(
-          'CREATE TABLE spots(id INTEGER PRIMARY KEY, name TEXT,description TEXT, mainZoneId INTEGER)',
+          'CREATE TABLE spots(id INTEGER PRIMARY KEY, name TEXT,description TEXT, mainZoneId INTEGER, image_header TEXT)',
         );
       },
       version: 1,
@@ -62,7 +62,7 @@ class DatabaseHandler {
     return result;
   }
 
-// Insert a zone
+  // Insert a zone
   Future<int> insertZone(Zone zone) async {
     int result = 0;
     final Database db = await initializeDB();
@@ -93,6 +93,7 @@ class DatabaseHandler {
         'id': spot.id,
         'name': spot.name,
         'description': spot.description,
+        'image_header': spot.image_header,
         'mainZoneId': spot.mainZoneId,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -213,5 +214,19 @@ class DatabaseHandler {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResult = await db.query('spots');
     return queryResult.map((e) => Spot.fromMap(e)).toList();
+  }
+
+  Future<Spot> getSpot(String id) async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> result =
+        await db.rawQuery('SELECT * FROM spots WHERE id=?', [id]);
+    return result.map((e) => Spot.fromMap(e)).toList()[0];
+  }
+
+  Future<List<Article>> getSpotArticle(String id) async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> result =
+        await db.rawQuery('SELECT * FROM articles WHERE spotId=?', [id]);
+    return result.map((e) => Article.fromMap(e)).toList();
   }
 }

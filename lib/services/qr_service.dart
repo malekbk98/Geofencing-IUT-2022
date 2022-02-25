@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:geofencing/screens/spot_page.dart';
 import 'package:geofencing/theme/app_theme.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -32,11 +33,6 @@ class _QrServiceState extends State<QrService> {
 
   @override
   Widget build(BuildContext context) {
-    if (result != null) {
-      checkScanResult(result!.code!); // Got result do stuff here
-      return Text('Result: ${result!.code}');
-    }
-
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -64,13 +60,13 @@ class _QrServiceState extends State<QrService> {
   }
 
   void _onQrViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
+    this.controller = controller;
+    bool scanned = false;
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      if (!scanned) {
+        scanned = true;
+        checkScanResult(scanData.code!);
+      }
     });
   }
 
@@ -84,5 +80,9 @@ class _QrServiceState extends State<QrService> {
   }
 
   void checkScanResult(String code) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => SpotPage(code)),
+    );
   }
 }

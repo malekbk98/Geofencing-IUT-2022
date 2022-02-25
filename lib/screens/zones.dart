@@ -44,8 +44,7 @@ class _ZonesScreenState extends State<ZonesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: zones
-                  .map((zone) => ZoneCard(zone.nom,
-                      NetworkImage('${uriAssets}/${zone.image_header}')))
+                  .map((zone) => ZoneCard(zone))
                   .toList(),
             ),
           ),

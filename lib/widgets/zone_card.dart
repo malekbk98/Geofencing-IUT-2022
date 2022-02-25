@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/data/loadData.dart';
+import 'package:geofencing/models/Zone.dart';
 import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 import 'package:geofencing/screens/zone_page.dart';
 
 class ZoneCard extends StatelessWidget {
-  final String title;
-  final ImageProvider image;
+  final Zone zone;
 
-  const ZoneCard(this.title, this.image, {Key? key}) : super(key: key);
+  const ZoneCard(this.zone, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class ZoneCard extends StatelessWidget {
       onTap: () {
         // print("zone");
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const ZonePage()));
+            context, MaterialPageRoute(builder: (context) => ZonePage(zone)));
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(
@@ -24,7 +25,7 @@ class ZoneCard extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: Center(
           child: Text(
-            title,
+            zone.nom,
             style: Theme.of(context).textTheme.headline4,
           ),
         ),
@@ -33,7 +34,7 @@ class ZoneCard extends StatelessWidget {
           image: DecorationImage(
             colorFilter:
                 ColorFilter.mode(AppTheme.fadedBackground, BlendMode.dstATop),
-            image: image,
+            image: NetworkImage('${uriAssets}/${zone.image_header}'),
             fit: BoxFit.fitWidth,
             alignment: Alignment.topCenter,
           ),
