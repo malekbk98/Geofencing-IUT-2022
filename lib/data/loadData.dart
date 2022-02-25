@@ -6,6 +6,7 @@ import 'package:geofencing/models/Zone.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/MainZone.dart';
+import '../models/Spot.dart';
 import '../services/check_connection.dart';
 
 late Future<List<Zone>> zones;
@@ -16,13 +17,14 @@ late Future<int> idUpdate;
 late Object? getId;
 
 bool dbIsEmpty = false;
-int port = 62007;
+int port = 62090;
 String token = "access_token=public_mine_token";
 String apiUri = "http://docketu.iutnc.univ-lorraine.fr";
 
 String uriMainZone = '${apiUri}:${port}/items/terrain?${token}';
 String uriZones = '${apiUri}:${port}/items/zone?${token}';
 String uriArticles = '${apiUri}:${port}/items/article?${token}';
+String uriSpots = '${apiUri}:${port}/items/borne?${token}';
 String checkIdUpdate = '${apiUri}:${port}/revisions?sort=-id&limit=1&${token}';
 
 //Fetch main zone
@@ -111,7 +113,39 @@ Future<List<Article>> fetchArticles() async {
     }
     return articles;
   } else {
-    throw Exception('Failed to load zones');
+    throw Exception('Failed to load articles');
+  }
+}
+
+//Fetch all spots
+Future<List<Spot>> fetchSpots() async {
+  final response = await http.get(Uri.parse(uriSpots));
+  if (response.statusCode == 200) {
+    //Save result (need to be stored in cache later)
+    var data = jsonDecode(response.body)['data'];
+
+    //Init db
+    await handler.initializeDB();
+
+    List<Spot> spots = [];
+    for (var s in data) {
+      if (s['status'] == 'published') {
+        var spot = Spot(
+          id: s['id'],
+          name: s['nom'],
+          description: s['description'],
+          mainZoneId: s['terrain'],
+        );
+        //Add to return
+        spots.add(spot);
+
+        //Add to db
+        handler.insertSpot(spot);
+      }
+    }
+    return spots;
+  } else {
+    throw Exception('Failed to load spots');
   }
 }
 
@@ -187,6 +221,9 @@ initData() async {
 
       //Load all articles
       await fetchArticles();
+
+      //Load all spots
+      await fetchSpots();
 
       //Update last change id
       await insertId();
