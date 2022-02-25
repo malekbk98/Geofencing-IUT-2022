@@ -3,6 +3,7 @@ import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/services/user_preferences.dart';
 import 'package:geofencing/data/loadData.dart';
+import 'package:vibration/vibration.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  late bool _notifications = false;
+  late bool _notifications = true;
 
   @override
   void initState() {
@@ -59,6 +60,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     setState(() {
                       UserPreferences().setNotificationsPreferences(value);
                       _notifications = value;
+                      if (_notifications) {
+                        Vibration.vibrate(duration: 400);
+                      }
                     });
                   },
                 ),

@@ -21,6 +21,7 @@ dependencies:
   poly_geofence_service: ^1.5.8
   connectivity_plus: ^2.2.1
   shared_preferences: ^2.0.13
+  vibration: ^1.7.4-nullsafety.0
 
 dev_dependencies:
   flutter_test:
