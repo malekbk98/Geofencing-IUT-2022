@@ -29,12 +29,12 @@ class DatabaseHandler {
 
         //Create idUpdate table
         await database.execute(
-          'CREATE TABLE idUpdate(id INTEGER PRIMARY KEY, idUpdate INTEGER)',
+          'CREATE TABLE updateDatas(id INTEGER PRIMARY KEY, idUpdate INTEGER, dateUpdate TEXT)',
         );
 
         //Insert default update id (0)
         await database.execute(
-          'INSERT INTO idUpdate(idUpdate) VALUES (0)',
+          'INSERT INTO updateDatas(idUpdate, dateUpdate) VALUES (0, CURRENT_TIMESTAMP)',
         );
 
         //Create Articles table
@@ -166,11 +166,8 @@ class DatabaseHandler {
     int result = 0;
     final Database db = await initializeDB();
     result = await db.insert(
-      'idUpdate',
-      {
-        'id': 12345,
-        'idUpdate': id,
-      },
+      'updateDatas',
+      {'id': 12345, 'idUpdate': id, 'dateUpdate': DateTime.now().toString()},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     return result;
@@ -180,8 +177,16 @@ class DatabaseHandler {
   Future<String> getLastIdUpdate() async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResultId = await db
-        .rawQuery('SELECT * FROM idUpdate ORDER BY idUpdate desc LIMIT 1');
+        .rawQuery('SELECT * FROM updateDatas ORDER BY idUpdate desc LIMIT 1');
     return queryResultId[0]['idUpdate'].toString();
+  }
+
+// Get last idUpdate in sqflite
+  Future<String> getDateTimeOfLastIdUpdate() async {
+    final Database db = await initializeDB();
+    final List<Map<String, Object?>> queryResultId = await db
+        .rawQuery('SELECT * FROM updateDatas ORDER BY idUpdate desc LIMIT 1');
+    return queryResultId[0]['dateUpdate'].toString();
   }
 
 //Count for empty DB or not
