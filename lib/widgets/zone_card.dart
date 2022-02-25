@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
+import 'package:geofencing/screens/zone_page.dart';
 
 class ZoneCard extends StatelessWidget {
   final String title;
@@ -12,7 +13,9 @@ class ZoneCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const SecondRoute()));
+        // print("zone");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const ZonePage()));
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(
