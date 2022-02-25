@@ -120,7 +120,7 @@ class _MapWidgetState extends State<MapWidget> {
         nonRotatedLayers: <LayerOptions>[
           // USAGE NOTE 3: Add the options for the plugin
           LocationOptions(
-            locationButton(),
+            location(),
             onLocationUpdate: (LatLngData? ld) {
               //print('Location updated: ${ld?.location} (accuracy: ${ld?.accuracy})');
             },
@@ -140,35 +140,16 @@ class _MapWidgetState extends State<MapWidget> {
     }
   }
 
-  LocationButtonBuilder locationButton() {
+  LocationButtonBuilder location() {
     return (BuildContext context, ValueNotifier<LocationServiceStatus> status,
         Function onPressed) {
-      return Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, right: 16.0),
-          child: FloatingActionButton(
-              child: ValueListenableBuilder<LocationServiceStatus>(
+      return ValueListenableBuilder<LocationServiceStatus>(
                   valueListenable: status,
                   builder: (BuildContext context, LocationServiceStatus value,
                       Widget? child) {
-                    switch (value) {
-                      case LocationServiceStatus.disabled:
-                      case LocationServiceStatus.permissionDenied:
-                      case LocationServiceStatus.unsubscribed:
-                        return const Icon(
-                          Icons.location_disabled,
-                          color: Colors.white,
-                        );
-                      default:
-                        return const Icon(
-                          Icons.location_searching,
-                          color: Colors.white,
-                        );
-                    }
-                  }),
-              onPressed: () => onPressed()),
-        ),
+                    return const Text('');
+                  }
+        
       );
     };
   }
