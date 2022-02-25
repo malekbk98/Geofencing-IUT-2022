@@ -96,7 +96,6 @@ Widget buildMenuItem({
   required IconData icon,
   VoidCallback? onClicked,
 }) {
-
   return ListTile(
     leading: Icon(icon, color: AppTheme.mainColor),
     title: Text(text),

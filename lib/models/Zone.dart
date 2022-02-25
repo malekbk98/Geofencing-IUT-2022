@@ -7,7 +7,7 @@ class Zone {
   final int mainZoneId;
   final String description;
   final List coordonnees;
-  final String? image_header;
+  final String image_header;
 
 //Constructor
   const Zone({

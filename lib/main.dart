@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/screens/home.dart';
+import 'package:geofencing/services/notification_service.dart';
 import 'package:geofencing/services/qr_service.dart';
 import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const MyApp());
