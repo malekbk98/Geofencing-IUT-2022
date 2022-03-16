@@ -99,7 +99,8 @@ class _SettingScreenState extends State<SettingScreen> {
                       style:
                           ElevatedButton.styleFrom(primary: AppTheme.mainColor),
                     ),
-                    Text('Dernière date de mises à jour le $dateUpdate'),
+                    const Text('Dernière date de mises à jour :'),
+                    Text(dateUpdate),
                   ],
                 ),
               ],
