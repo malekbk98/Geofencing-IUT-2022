@@ -7,7 +7,7 @@ class Zone {
   final int mainZoneId;
   final String description;
   final List coordonnees;
-  final String image_header;
+  final String? image_header;
 
 //Constructor
   const Zone({
@@ -17,7 +17,7 @@ class Zone {
     required this.mainZoneId,
     required this.description,
     required this.coordonnees,
-    required this.image_header,
+    this.image_header,
   });
 
   //From Json

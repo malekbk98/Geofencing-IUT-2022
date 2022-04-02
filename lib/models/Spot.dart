@@ -4,7 +4,7 @@ class Spot {
   final int id;
   final String name;
   final String description;
-  final String image_header;
+  final String? image_header;
   final int? mainZoneId;
 
 //Constructor
@@ -12,7 +12,7 @@ class Spot {
     required this.id,
     required this.name,
     required this.description,
-    required this.image_header,
+    this.image_header,
     required this.mainZoneId,
   });
 

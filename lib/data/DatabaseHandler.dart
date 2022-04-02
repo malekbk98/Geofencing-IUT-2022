@@ -98,7 +98,7 @@ class DatabaseHandler {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print(spot);
+    //print(spot);
 
     return result;
   }

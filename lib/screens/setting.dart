@@ -45,6 +45,10 @@ class _SettingScreenState extends State<SettingScreen> {
         endDrawer: const NavigationDrawerWidget(),
         appBar: AppBar(
           title: const Text('Paramètres'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           centerTitle: true,
         ),
         body: Center(

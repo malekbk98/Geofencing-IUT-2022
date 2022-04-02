@@ -8,20 +8,22 @@ class ZonePage extends StatelessWidget {
   final Zone zone;
   const ZonePage(this.zone, {Key? key}) : super(key: key);
 
-  
   @override
   Widget build(BuildContext context) => Scaffold(
         endDrawer: const NavigationDrawerWidget(),
         appBar: AppBar(
           title: const Text('Les bornes'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           centerTitle: true,
         ),
-        body: 
-        FutureBuilder(
-          future: getTextData(),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              return SingleChildScrollView(
+        body: FutureBuilder(
+            future: getTextData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SingleChildScrollView(
                   physics: const ScrollPhysics(),
                   child: Column(
                     children: <Widget>[
@@ -45,16 +47,15 @@ class ZonePage extends StatelessWidget {
                       )
                     ],
                   ),
-              );
-            }
-            return const Center(child: CircularProgressIndicator());
-          }
-        ),
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            }),
       );
 
-  Future<String> getTextData() async{
+  Future<String> getTextData() async {
     var md = "";
-       
+
     for (var a in await handler.getZoneArticles(zone.id)) {
       md += a.content;
     }

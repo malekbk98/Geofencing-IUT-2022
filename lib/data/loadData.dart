@@ -56,6 +56,7 @@ Future<MainZone> fetchMainZone() async {
 //Fetch all zones
 Future<List<Zone>> fetchZones() async {
   final response = await http.get(Uri.parse(uriZones));
+
   if (response.statusCode == 200) {
     //Save result (need to be stored in cache later)
     var data = jsonDecode(response.body)['data'];
@@ -218,7 +219,7 @@ initData() async {
 
       //Load main zone
       await fetchMainZone();
-
+      print('ok');
       //Load all zones
       await fetchZones();
 

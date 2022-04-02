@@ -14,7 +14,7 @@ class Article {
     required this.id,
     required this.title,
     required this.content,
-    required this.img,
+    this.img,
     required this.spotId,
     required this.zoneId,
     required this.mainZoneId,

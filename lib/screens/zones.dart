@@ -16,7 +16,7 @@ class ZonesScreen extends StatefulWidget {
 
 class _ZonesScreenState extends State<ZonesScreen> {
   late DatabaseHandler handler;
-  late List<Zone> zones;
+  late List<Zone> zones = [];
 
   @override
   void initState() {
@@ -35,6 +35,10 @@ class _ZonesScreenState extends State<ZonesScreen> {
         endDrawer: const NavigationDrawerWidget(),
         appBar: AppBar(
           title: const Text('Les zones'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -43,9 +47,7 @@ class _ZonesScreenState extends State<ZonesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: zones
-                  .map((zone) => ZoneCard(zone))
-                  .toList(),
+              children: zones.map((zone) => ZoneCard(zone)).toList(),
             ),
           ),
         ),

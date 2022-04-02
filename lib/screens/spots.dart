@@ -7,7 +7,7 @@ import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 import '../data/DatabaseHandler.dart';
 
 class SpotsScreen extends StatefulWidget {
-  const SpotsScreen({ Key? key }) : super(key: key);
+  const SpotsScreen({Key? key}) : super(key: key);
 
   @override
   _SpotsScreenState createState() => _SpotsScreenState();
@@ -15,8 +15,7 @@ class SpotsScreen extends StatefulWidget {
 
 class _SpotsScreenState extends State<SpotsScreen> {
   late DatabaseHandler handler;
-  late List<Spot> spots;
-  
+  late List<Spot> spots = [];
 
   @override
   void initState() {
@@ -32,23 +31,24 @@ class _SpotsScreenState extends State<SpotsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    endDrawer: const NavigationDrawerWidget(),
-    appBar: AppBar(
-      title: const Text('Les bornes'),
-      centerTitle: true,
-    ),
-    body: GridView.count(
-        primary: false,
-        padding: const EdgeInsets.all(20),
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: 2,
-        children: spots
-                  .map((spot) => SpotCard(
-                      spot.id.toString(),
-                      spot.name,
-                      NetworkImage('${uriAssets}/${spot.image_header}')))
-                  .toList()
-      ),
-  );
+        endDrawer: const NavigationDrawerWidget(),
+        appBar: AppBar(
+          title: const Text('Les bornes'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          centerTitle: true,
+        ),
+        body: GridView.count(
+            primary: false,
+            padding: const EdgeInsets.all(20),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            crossAxisCount: 2,
+            children: spots
+                .map((spot) => SpotCard(spot.id.toString(), spot.name,
+                    NetworkImage('${uriAssets}/${spot.image_header}')))
+                .toList()),
+      );
 }
