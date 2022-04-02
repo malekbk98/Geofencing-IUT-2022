@@ -43,11 +43,15 @@ class _ZonesScreenState extends State<ZonesScreen> {
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: Expanded(
+          child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: zones.map((zone) => ZoneCard(zone)).toList(),
+              children: zones
+                  .map(
+                    (zone) => ZoneCard(zone),
+                  )
+                  .toList(),
             ),
           ),
         ),

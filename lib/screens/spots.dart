@@ -41,14 +41,20 @@ class _SpotsScreenState extends State<SpotsScreen> {
           centerTitle: true,
         ),
         body: GridView.count(
-            primary: false,
-            padding: const EdgeInsets.all(20),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            crossAxisCount: 2,
-            children: spots
-                .map((spot) => SpotCard(spot.id.toString(), spot.name,
-                    NetworkImage('${uriAssets}/${spot.image_header}')))
-                .toList()),
+          primary: false,
+          padding: const EdgeInsets.all(20),
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: spots
+              .map(
+                (spot) => SpotCard(
+                  spot.id.toString(),
+                  spot.name,
+                  NetworkImage('${uriAssets}/${spot.image_header}'),
+                ),
+              )
+              .toList(),
+        ),
       );
 }
