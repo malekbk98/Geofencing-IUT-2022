@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:geofencing/data/DatabaseHandler.dart';
@@ -8,7 +10,7 @@ import 'package:geofencing/widgets/navigation_drawer_widget.dart';
 class SpotPage extends StatelessWidget {
   String id;
   String md = " ";
-
+  int i = 1;
   SpotPage(this.id, {Key? key}) : super(key: key);
 
   @override
@@ -62,6 +64,14 @@ class SpotPage extends StatelessWidget {
                   ),
                 );
               } else {
+                if (i > 1) {
+                  return const AlertDialog(
+                    title: Text("Borne introuvable"),
+                    content: Text(
+                        "Malheureusement le borne scanné n'est pas disponible pour le moment"),
+                  );
+                }
+                i++;
                 return const Center(child: CircularProgressIndicator());
               }
             }),
