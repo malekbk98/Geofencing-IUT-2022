@@ -200,16 +200,17 @@ class DatabaseHandler {
   //Get article by zone id
   Future<List<Article>> getZoneArticles(int id) async {
     final Database db = await initializeDB();
-    final List<Map<String, Object?>> result =
-        await db.rawQuery('SELECT * FROM articles WHERE zoneId=?', [id]);
+    final List<Map<String, Object?>> result = await db.rawQuery(
+        'SELECT * FROM articles WHERE zoneId=? and mainZoneId IS NULL', [id]);
     return result.map((e) => Article.fromMap(e)).toList();
   }
 
   //Get article by mainZone id
   Future<String> getMainZoneArticle(int id) async {
     final Database db = await initializeDB();
-    final List<Map<String, Object?>> result =
-        await db.rawQuery('SELECT * FROM articles WHERE mainZoneId=?', [id]);
+    final List<Map<String, Object?>> result = await db.rawQuery(
+        'SELECT * FROM articles WHERE mainZoneId=? and zoneId IS NULL and spotId IS NULL',
+        [id]);
     return result[0]['content'].toString();
   }
 
@@ -230,8 +231,8 @@ class DatabaseHandler {
 
   Future<List<Article>> getSpotArticle(String id) async {
     final Database db = await initializeDB();
-    final List<Map<String, Object?>> result =
-        await db.rawQuery('SELECT * FROM articles WHERE spotId=?', [id]);
+    final List<Map<String, Object?>> result = await db.rawQuery(
+        'SELECT * FROM articles WHERE spotId=? and mainZoneId IS NULL', [id]);
     return result.map((e) => Article.fromMap(e)).toList();
   }
 }
