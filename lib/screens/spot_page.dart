@@ -64,6 +64,7 @@ class SpotPage extends StatelessWidget {
                   ),
                 );
               } else {
+                //If calls > 1 that's mean no spot found
                 if (i > 1) {
                   return const AlertDialog(
                     title: Text("Borne introuvable"),

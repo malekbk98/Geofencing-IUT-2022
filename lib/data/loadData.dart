@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:geofencing/models/Article.dart';
 import 'package:geofencing/models/Zone.dart';
@@ -17,9 +18,9 @@ late Future<int> idUpdate;
 late Object? getId;
 
 bool dbIsEmpty = false;
-int port = 62007;
-String token = "access_token=public_mine_token";
-String apiUri = "http://docketu.iutnc.univ-lorraine.fr";
+late int port;
+String apiUri = "";
+String token = "";
 
 String uriAssets = '$apiUri:$port/assets';
 
@@ -132,7 +133,6 @@ Future<List<Spot>> fetchSpots() async {
 
     List<Spot> spots = [];
     for (var s in data) {
-      print(s);
       if (s['status'] == 'published') {
         var spot = Spot(
           id: s['id'],
@@ -198,6 +198,19 @@ Future insertId() async {
 initData() async {
   late bool updateCheck;
   try {
+    //Load config the first run
+    if (apiUri == "") {
+      //Get confirguration from config file
+      final contents = await rootBundle.loadString(
+        'assets/config/config.json',
+      );
+
+      final config = jsonDecode(contents);
+      port = config['port'];
+      apiUri = config['hostname'];
+      token = config['token'];
+    }
+
     handler = DatabaseHandler();
     //Check db status (empty/not)
     bool dbCheck = await handler.dbIsEmptyOrNot();
@@ -219,7 +232,7 @@ initData() async {
 
       //Load main zone
       await fetchMainZone();
-      print('ok');
+
       //Load all zones
       await fetchZones();
 

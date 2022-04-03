@@ -1,0 +1,5 @@
+{
+    "hostname": "<hostname>",
+    "port": "<port>",
+    "token": "access_token=<token>"
+}

@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late List<PolyGeofence> zonesList = [];
   String content = "";
   String mainZoneContent = "";
+  String lastNotif = "";
 
   // Create a [PolyGeofenceService] instance and set options.
   final _polyGeofenceService = PolyGeofenceService.instance.setup(
@@ -48,31 +49,25 @@ class _HomeScreenState extends State<HomeScreen> {
       res = polyGeofence.data['content'];
 
       // Getting notified after entering orgoing out of a zone
-      UserPreferences()
-          .getNotificationsPreferences('notifications')
-          .then((value) {
-        if (value!) {
-          NotificationService().showNotification(Random().nextInt(99999),
-              polyGeofence.data['name'], polyGeofence.data['description']);
-        }
-      });
+      UserPreferences().getNotificationsPreferences('notifications').then(
+        (value) {
+          if (value! && polyGeofence.data['name'] != lastNotif) {
+            //To ignore showing the same notification when position changes
+            lastNotif = polyGeofence.data['name'];
+            NotificationService().showNotification(
+              Random().nextInt(99999),
+              polyGeofence.data['name'],
+              polyGeofence.data['description'],
+            );
+          }
+        },
+      );
     }
 
     //Update state
     setState(() {
       content = res;
     });
-  }
-
-  //Handel geofence errors
-  void _onError(error) {
-    final errorCode = getErrorCodesFromError(error);
-    if (errorCode == null) {
-      print('Undefined error: $error');
-      return;
-    }
-
-    print('ErrorCode: $errorCode');
   }
 
   @override
@@ -132,8 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         _polyGeofenceService
             .addPolyGeofenceStatusChangeListener(_onPolyGeofenceStatusChanged);
-        _polyGeofenceService.addStreamErrorListener(_onError);
-        _polyGeofenceService.start(zonesList).catchError(_onError);
+        _polyGeofenceService.start(zonesList);
       });
     });
   }

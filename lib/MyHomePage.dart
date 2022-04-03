@@ -78,18 +78,23 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       //No internet connection found and the database is empty
       return AlertDialog(
-          title: const Text("Internet requis"),
-          content: const Text(
-              "Ops, vous avez besoin d'une connexion Internet pour ouvrir l'application"),
-          actions: [
-            TextButton(
-              child: const Text("Réessayer",
-                  style: TextStyle(color: Color.fromRGBO(198, 120, 9, 1.0))),
-              onPressed: () {
-                initState();
-              },
+        title: const Text("Internet requis"),
+        content: const Text(
+            "Ops, vous avez besoin d'une connexion Internet pour ouvrir l'application"),
+        actions: [
+          TextButton(
+            child: const Text(
+              "Réessayer",
+              style: TextStyle(
+                color: Color.fromRGBO(198, 120, 9, 1.0),
+              ),
             ),
-          ]);
+            onPressed: () {
+              initState();
+            },
+          ),
+        ],
+      );
     }
   }
 }
