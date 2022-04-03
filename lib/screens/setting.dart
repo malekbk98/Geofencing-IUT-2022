@@ -5,6 +5,7 @@ import 'package:geofencing/services/user_preferences.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:vibration/vibration.dart';
 import 'package:geofencing/data/DatabaseHandler.dart';
+import 'package:intl/intl.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   late bool _notifications = true;
-  late String dateUpdate;
+  late String dateUpdate = "";
 
   @override
   void initState() {
@@ -24,7 +25,8 @@ class _SettingScreenState extends State<SettingScreen> {
     handler.initializeDB().whenComplete(() async {
       await handler.getDateTimeOfLastIdUpdate().then((value) {
         setState(() {
-          dateUpdate = value;
+          DateTime temp = DateTime.parse(value);
+          dateUpdate = DateFormat("dd/MM/yyyy HH:mm:ss").format(temp);
         });
       });
     });
@@ -81,6 +83,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     });
                   },
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
                 Column(
                   children: [
                     ElevatedButton.icon(
@@ -103,7 +108,14 @@ class _SettingScreenState extends State<SettingScreen> {
                       style:
                           ElevatedButton.styleFrom(primary: AppTheme.mainColor),
                     ),
-                    Text('Dernière date de mises à jour le $dateUpdate'),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Center(
+                      child: Text(
+                          'Dernière date de mises à jour le $dateUpdate',
+                          textAlign: TextAlign.center),
+                    ),
                   ],
                 ),
               ],
