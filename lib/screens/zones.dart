@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
+import 'package:geofencing/models/Zone.dart';
 import 'package:geofencing/widgets/zone_card.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
-
-import 'package:geofencing/data/loadData.dart';
-
-import '../data/DatabaseHandler.dart';
-import '../models/Zone.dart';
 
 class ZonesScreen extends StatefulWidget {
   const ZonesScreen({Key? key}) : super(key: key);

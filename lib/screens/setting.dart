@@ -4,7 +4,6 @@ import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/services/user_preferences.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:vibration/vibration.dart';
-import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:intl/intl.dart';
 
 class SettingScreen extends StatefulWidget {

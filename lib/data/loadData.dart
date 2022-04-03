@@ -3,32 +3,34 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:geofencing/models/Article.dart';
+import 'package:geofencing/models/MainZone.dart';
+import 'package:geofencing/models/Spot.dart';
 import 'package:geofencing/models/Zone.dart';
+import 'package:geofencing/services/check_connection.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/MainZone.dart';
-import '../models/Spot.dart';
-import '../services/check_connection.dart';
-
+//Zones
 late Future<List<Zone>> zones;
 late Future<MainZone> mainZone;
-late DatabaseHandler handler;
 
+//Datebase
+late DatabaseHandler handler;
+bool dbIsEmpty = false;
 late Future<int> idUpdate;
 late Object? getId;
 
-bool dbIsEmpty = false;
+//Config
 late int port;
 String apiUri = "";
 String token = "";
 
+//URIs
 String uriAssets = '$apiUri:$port/assets';
-
-String uriMainZone = '${apiUri}:${port}/items/terrain?${token}';
-String uriZones = '${apiUri}:${port}/items/zone?${token}';
-String uriArticles = '${apiUri}:${port}/items/article?${token}';
-String uriSpots = '${apiUri}:${port}/items/borne?${token}';
-String checkIdUpdate = '${apiUri}:${port}/revisions?sort=-id&limit=1&${token}';
+String uriMainZone = '$apiUri:$port/items/terrain?$token';
+String uriZones = '$apiUri:$port/items/zone?$token';
+String uriArticles = '$apiUri:$port/items/article?$token';
+String uriSpots = '$apiUri:$port/items/borne?$token';
+String checkIdUpdate = '$apiUri:$port/revisions?sort=-id&limit=1&$token';
 
 //Fetch main zone
 Future<MainZone> fetchMainZone() async {

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
 import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/models/Spot.dart';
 import 'package:geofencing/widgets/spot_card.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
-
-import '../data/DatabaseHandler.dart';
 
 class SpotsScreen extends StatefulWidget {
   const SpotsScreen({Key? key}) : super(key: key);
@@ -22,11 +21,13 @@ class _SpotsScreenState extends State<SpotsScreen> {
     super.initState();
 
     handler = DatabaseHandler();
-    handler.initializeDB().whenComplete(() async {
-      //Get all zones from db
-      spots = await handler.getSpots();
-      setState(() {});
-    });
+    handler.initializeDB().whenComplete(
+      () async {
+        //Get all zones from db
+        spots = await handler.getSpots();
+        setState(() {});
+      },
+    );
   }
 
   @override
@@ -51,7 +52,7 @@ class _SpotsScreenState extends State<SpotsScreen> {
                 (spot) => SpotCard(
                   spot.id.toString(),
                   spot.name,
-                  NetworkImage('${uriAssets}/${spot.image_header}'),
+                  NetworkImage('$uriAssets/${spot.image_header}'),
                 ),
               )
               .toList(),

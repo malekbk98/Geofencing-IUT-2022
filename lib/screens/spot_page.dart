@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:geofencing/data/DatabaseHandler.dart';
@@ -36,7 +35,7 @@ class SpotPage extends StatelessWidget {
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         child: Image.network(
-                          '${uriAssets}/${snapshot.data!.image_header}',
+                          '$uriAssets/${snapshot.data!.image_header}',
                           fit: BoxFit.fill,
                         ),
                         shape: RoundedRectangleBorder(
@@ -88,7 +87,6 @@ class SpotPage extends StatelessWidget {
 
     //Combine articles
     for (var a in articles) {
-      print(a);
       temp = temp + a.content;
     }
 

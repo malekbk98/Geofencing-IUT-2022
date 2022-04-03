@@ -31,7 +31,7 @@ class ZonePage extends StatelessWidget {
                       semanticContainer: true,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: Image.network(
-                        '${uriAssets}/${zone.image_header}',
+                        '$uriAssets/${zone.image_header}',
                         fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder(

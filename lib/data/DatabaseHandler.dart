@@ -1,17 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:geofencing/models/Article.dart';
+import 'package:geofencing/models/MainZone.dart';
+import 'package:geofencing/models/Spot.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geofencing/models/Zone.dart';
 
-import '../models/Article.dart';
-import '../models/MainZone.dart';
-import '../models/Spot.dart';
-
 late List<Zone> zones;
 
 class DatabaseHandler {
-// Initiate database
+  // Initiate database
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
@@ -51,7 +50,7 @@ class DatabaseHandler {
     );
   }
 
-//Reset table
+  //Reset table
   Future<int> resetDb() async {
     int result = 0;
     final Database db = await initializeDB();
@@ -98,12 +97,10 @@ class DatabaseHandler {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    //print(spot);
-
     return result;
   }
 
-// Insert main zone
+  // Insert main zone
   Future<int> insertMainZone(MainZone zone) async {
     int result = 0;
     final Database db = await initializeDB();
@@ -123,10 +120,9 @@ class DatabaseHandler {
     return result;
   }
 
-// Insert a zone
+  // Insert a zone
   Future<int> insertArticle(Article article) async {
     int result = 0;
-    //print(article);
 
     final Database db = await initializeDB();
     result = await db.insert(
@@ -146,7 +142,7 @@ class DatabaseHandler {
     return result;
   }
 
-//Get all zones
+  //Get all zones
   Future<List<Zone>> getZones() async {
     // Get a reference to the database.
     final Database db = await initializeDB();
@@ -154,7 +150,7 @@ class DatabaseHandler {
     return queryResult.map((e) => Zone.fromMap(e)).toList();
   }
 
-//Get main zones
+  //Get main zones
   Future<List<MainZone>> getMainZones() async {
     // Get a reference to the database.
     final Database db = await initializeDB();
@@ -162,7 +158,7 @@ class DatabaseHandler {
     return queryResult.map((e) => MainZone.fromMap(e)).toList();
   }
 
-//Insert a idUpdate
+  //Insert a idUpdate
   Future<int> insertIdUpdate(int id) async {
     int result = 0;
     final Database db = await initializeDB();
@@ -174,7 +170,7 @@ class DatabaseHandler {
     return result;
   }
 
-// Get last idUpdate in sqflite
+  //Get last idUpdate in sqflite
   Future<String> getLastIdUpdate() async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResultId = await db
@@ -182,7 +178,7 @@ class DatabaseHandler {
     return queryResultId[0]['idUpdate'].toString();
   }
 
-// Get last idUpdate in sqflite
+  //Get last idUpdate in sqflite
   Future<String> getDateTimeOfLastIdUpdate() async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResultId = await db
@@ -190,7 +186,7 @@ class DatabaseHandler {
     return queryResultId[0]['dateUpdate'].toString();
   }
 
-//Count for empty DB or not
+  //Count for empty DB or not
   Future<bool> dbIsEmptyOrNot() async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> queryResult = await db.query('zones');
@@ -222,6 +218,7 @@ class DatabaseHandler {
     return queryResult.map((e) => Spot.fromMap(e)).toList();
   }
 
+  //Get spot by id
   Future<Spot> getSpot(String id) async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> result =
@@ -229,6 +226,7 @@ class DatabaseHandler {
     return result.map((e) => Spot.fromMap(e)).toList()[0];
   }
 
+  //Get spot article
   Future<List<Article>> getSpotArticle(String id) async {
     final Database db = await initializeDB();
     final List<Map<String, Object?>> result = await db.rawQuery(

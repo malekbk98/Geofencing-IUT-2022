@@ -1,5 +1,7 @@
 {
     "hostname": "<hostname>",
-    "port": "<port>",
-    "token": "access_token=<token>"
+    "port": "<port [Int]>",
+    "token": "access_token=<token>",
+    "mainZonelat": "<latitude of the main zone [Double]>",
+    "mainZonelong": "<longitude of the main zone [Double]>"
 }

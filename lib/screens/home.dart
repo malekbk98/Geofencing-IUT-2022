@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
+import 'package:geofencing/services/notification_service.dart';
 import 'package:geofencing/widgets/map.dart';
 import 'package:poly_geofence_service/poly_geofence_service.dart';
 import 'package:geofencing/services/user_preferences.dart';
-import '../data/DatabaseHandler.dart';
-import '../services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -40,14 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
         polyGeofenceStatus.toString().replaceAll('PolyGeofenceStatus.', '');
     String res = "";
     if (status == "EXIT") {
+      //**********************User exit zone*****************************
+
       //Return default info (main zone info)
       res = mainZoneContent;
     } else {
-      //User enter zone
+      //**********************User enter zone*****************************
 
       //Return current zone info
       res = polyGeofence.data['content'];
-
       // Getting notified after entering orgoing out of a zone
       UserPreferences().getNotificationsPreferences('notifications').then(
         (value) {

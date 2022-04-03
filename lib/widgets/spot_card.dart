@@ -7,17 +7,16 @@ class SpotCard extends StatelessWidget {
   final String title;
   final ImageProvider image;
 
-  const SpotCard(this.id, this.title, this.image, { Key? key }) : super(key: key);
+  const SpotCard(this.id, this.title, this.image, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // print("zone");
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => SpotPage(id)));
       },
-      child:Container(
+      child: Container(
         child: Center(
           child: Text(
             title,
@@ -27,7 +26,8 @@ class SpotCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           image: DecorationImage(
-            colorFilter: ColorFilter.mode(AppTheme.fadedBackground, BlendMode.dstATop),
+            colorFilter:
+                ColorFilter.mode(AppTheme.fadedBackground, BlendMode.dstATop),
             image: image,
             fit: BoxFit.fitHeight,
             alignment: Alignment.topCenter,
