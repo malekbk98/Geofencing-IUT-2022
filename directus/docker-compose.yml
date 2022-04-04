@@ -1,0 +1,109 @@
+version: '3'
+
+networks:
+  directus:
+
+services:
+#  database:
+#    container_name: database
+#    image: postgis/postgis:13-master
+#    volumes:
+#      - ./data/database:/var/lib/postgresql/data
+#    networks:
+#      - directus
+#    environment:
+#      POSTGRES_USER: 'directus'
+#      POSTGRES_PASSWORD: 'directus'
+#      POSTGRES_DB: 'directus'
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./data_seb:/var/lib/mysql
+    env_file: .env_mysql
+    ports:
+      - '62009:3306'
+    networks:
+      - directus
+
+  cache:
+    container_name: cache
+    image: redis:6
+    networks:
+      - directus
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    networks:
+      - directus
+    ports:
+      - '62008:8080'
+    depends_on:
+      - mysql
+    command:
+      - 'php'
+      - '-S'
+      - '0.0.0.0:8080'
+      - '-t'
+      - '/var/www/html'
+
+  directus:
+    container_name: directus
+    image: directus/directus:latest
+    ports:
+      - 62007:8055
+    volumes:
+      # By default, uploads are stored in /directus/uploads
+      # Always make sure your volumes matches the storage root when using
+      # local driver
+      - ./uploads:/directus/uploads
+      # Make sure to also mount the volume when using SQLite
+      # - .s:
+      # us/database
+      # If you want to load extensions from the host
+      - ./extensions:/directus/extensions
+    networks:
+      - directus
+    depends_on:
+      - cache
+      - mysql
+    environment:
+      http_proxy: 'http://www-cache.iutnc.univ-lorraine.fr:3128'
+      https_proxy: 'http://www-cache.iutnc.univ-lorraine.fr:3128'
+      CORS_ENABLED: 'true'
+      
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+
+      DB_CLIENT: 'mysql'
+      DB_HOST: 'mysql'
+      DB_PORT: '3306'
+      DB_DATABASE: 'directus'
+      DB_USER: 'directus'
+      DB_PASSWORD: 'directus'
+
+      CACHE_ENABLED: 'true'
+      CACHE_AUTO_PURGE: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://cache:6379'
+
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'd1r3ctu5'
+
+      CONTENT_SECURITY_POLICY_DIRECTIVES__CONNECT_SRC: "'self' *.mapbox.com *.openstreetmap.org"
+      CONTENT_SECURITY_POLICY_DIRECTIVES__WORKER_SRC: "'self' blob:"
+      CONTENT_SECURITY_POLICY_DIRECTIVES__IMG_SRC: "'self' data_seb: blob:"
+      CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC: "'self' 'unsafe-eval' *.mapbox.com"
+      CONTENT_SECURITY_POLICY_DIRECTIVES__DEFAULT_SRC: "'self' *.mapbox.com"
+      
+      #"http_proxy":  "http://www-cache.iutnc.univ-lorraine.fr:3128"
+      #"https_proxy": "https://www-cache.iutnc.univ-lorraine.fr:3128"
+
+      # Make sure to set this in production
+      # (see https://docs.directus.io/reference/environment-variables/#general)
+      # PUBLIC_URL: 'https://directus.example.com'
+
+
