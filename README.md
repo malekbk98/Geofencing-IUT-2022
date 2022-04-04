@@ -33,6 +33,7 @@ CCe dépôt contient l'application mobile développée en Flutter ainsi que le f
 ## Deux méthodes:
 ### 1) Exécuter ce code source
 -    **Note** : avoir une version de Flutter compatible (Flutter 2.10.3)
+-   Créer le fichier de config ```config.json``` (dans assets/config) depuis l'example ```config_example.json```
 -   ``` geofencing> flutter run ```
 
 
