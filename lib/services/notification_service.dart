@@ -1,5 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// package : flutter_local_notifications: ^9.3.1
 
 class NotificationService {
   static final NotificationService _notificationService =

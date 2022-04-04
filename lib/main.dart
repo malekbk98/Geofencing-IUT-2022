@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geofencing/MyHomePage.dart';
 import 'package:geofencing/services/notification_service.dart';
 import 'package:geofencing/theme/app_theme.dart';
-
-import 'MyHomePage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/MyHomePage.dart';
 import 'package:geofencing/screens/setting.dart';
 import 'package:geofencing/screens/spots.dart';
 import 'package:geofencing/screens/zones.dart';
 import 'package:geofencing/theme/app_theme.dart';
-
-import '../MyHomePage.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   final padding = const EdgeInsets.symmetric(horizontal: 10);

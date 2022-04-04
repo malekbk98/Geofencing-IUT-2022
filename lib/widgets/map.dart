@@ -1,14 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
+import 'package:geofencing/models/MainZone.dart';
+import 'package:geofencing/models/Zone.dart';
 import 'package:latlong2/latlong.dart' as lat;
-
-import '../data/DatabaseHandler.dart';
-import '../models/MainZone.dart';
-import '../models/Zone.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);

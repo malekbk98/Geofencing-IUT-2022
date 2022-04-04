@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geofencing/data/DatabaseHandler.dart';
+import 'package:geofencing/data/loadData.dart';
 import 'package:geofencing/screens/home.dart';
 import 'package:geofencing/services/check_connection.dart';
 import 'package:geofencing/services/qr_service.dart';
 import 'package:geofencing/theme/app_theme.dart';
 import 'package:geofencing/widgets/navigation_drawer_widget.dart';
-
-import 'data/DatabaseHandler.dart';
-import 'data/loadData.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
