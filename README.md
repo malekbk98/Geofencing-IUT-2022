@@ -11,7 +11,7 @@ CCe dépôt contient l'application mobile développée en Flutter ainsi que le f
 - Date de début : **08 Nouvembre 2021**
 - Date de fin : **08 Avril 2022**
 
-## Membre de group :
+## Membres du groupe :
 
 - Youssef Bahi (youssef.bahi1@etu.univ-lorraine.fr)
 - Malek Ben Khalifa (malek.ben-khalifa3@etu.univ-lorraine.fr)
@@ -24,7 +24,7 @@ CCe dépôt contient l'application mobile développée en Flutter ainsi que le f
 - Dart 2.16.1
 - DevTools 2.9.2
 
-## Lien utiles :
+## Liens utiles :
 
 - CMS : https://geofencingiut.netlify.app/
 - Interface administrateur : http://docketu.iutnc.univ-lorraine.fr:62007/
@@ -93,7 +93,7 @@ Importer le fichier directus-geofencing-datas.sql
 - Activer/déactiver les notifications.
 - Vérifier s'il y a des mises à jour.
 
-### BakOffice (version web)
+### BackOffice (version web)
 
 #### _*Gestionnaire de contenu*_
 
